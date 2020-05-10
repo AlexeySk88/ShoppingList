@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shopping_list_fragment"
-    tools:context=".ui.ShoppingFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="model"
+            type="ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/shopping_list_fragment"
+        tools:context=".ui.ShoppingFragment">
 
-<!--        <include layout="@layout/preloader" />-->
+        <!--        <include layout="@layout/preloader" />-->
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shoppingListView"
+            android:id="@+id/listView"
+            app:setAdapter="@{model.adapter}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="LinearLayoutManager"
@@ -19,4 +25,5 @@
             android:dividerHeight="10dp"
             app:layout_constraintTop_toTopOf="parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

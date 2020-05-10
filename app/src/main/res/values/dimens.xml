@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_view_elevation">4dp</dimen>
+    <dimen name="card_view_coroner_radius">4dp</dimen>
+    <dimen name="card_view_margin">4dp</dimen>
+    <dimen name="card_view_padding_vertical">7dp</dimen>
+
+    <dimen name="shopping_title_text">25sp</dimen>
+    <dimen name="shopping_horizontal_margin">20dp</dimen>
+    <dimen name="shopping_count_text">22sp</dimen>
+    <dimen name="shopping_separator_width">300dp</dimen>
+    <dimen name="shopping_separator_margin_top">7dp</dimen>
+</resources>
