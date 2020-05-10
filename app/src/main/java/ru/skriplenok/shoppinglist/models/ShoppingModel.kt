@@ -4,24 +4,16 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class ShoppingModel(
-    private val id: Int?,
-    private val name: String?,
-    private val count: String?
+    val id: Int,
+    val name: String?,
+    val count: String?
 ): Parcelable  {
 
     constructor(parcel: Parcel) : this(
-        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readInt(),
         parcel.readString(),
         parcel.readString()
     ) {
-    }
-
-    fun getName(): String {
-        return name ?: ""
-    }
-
-    fun getCount(): String {
-        return count ?: ""
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

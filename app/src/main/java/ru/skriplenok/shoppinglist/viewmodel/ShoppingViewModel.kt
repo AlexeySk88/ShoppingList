@@ -2,6 +2,7 @@ package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
@@ -13,21 +14,23 @@ class ShoppingViewModel: ViewModel() {
 
     val loading: ObservableInt = ObservableInt(View.GONE)
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
+    val countItems: Int
+        get() = shoppingList.count()
+    val selected: MutableLiveData<ShoppingModel> = MutableLiveData()
 
     private val repository: Repository = FakeRepositories()
     private var shoppingList: List<ShoppingModel> = mutableListOf()
 
     fun init() {
-
+        selected.value = null
     }
 
-    fun getList(): List<ShoppingModel> { //TODO заменить на liveData
+    fun fetchData(): List<ShoppingModel> { //TODO заменить на liveData
         shoppingList = repository.fetchShoppingList()
         return shoppingList
     }
 
-    fun setModelInAdapter(list: List<ShoppingModel>) {
-        adapter.mDataList = list
+    fun setModelInAdapter() {
         adapter.notifyDataSetChanged()
     }
 
@@ -35,7 +38,11 @@ class ShoppingViewModel: ViewModel() {
         if (position < shoppingList.size) {
             return shoppingList[position]
         }
-
         return null
+    }
+
+    fun onClick(position: Int) {
+        val item = getItem(position)
+        selected.value = item
     }
 }

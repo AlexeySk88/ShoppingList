@@ -6,5 +6,18 @@
     <fragment
         android:id="@+id/shoppingFragment"
         android:name="ru.skriplenok.shoppinglist.ui.ShoppingFragment"
-        android:label="ShoppingFragment" />
+        android:label="ShoppingFragment">
+        <action
+            android:id="@+id/action_shoppingListFragment_to_newListFragments"
+            app:destination="@id/productsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/productsFragment"
+        android:name="ru.skriplenok.shoppinglist.ui.ProductsFragment"
+        android:label="ProductsFragment">
+        <argument
+            android:name="ShoppingArgument"
+            app:argType="ru.skriplenok.shoppinglist.models.ShoppingModel" />
+    </fragment>
 </navigation>
