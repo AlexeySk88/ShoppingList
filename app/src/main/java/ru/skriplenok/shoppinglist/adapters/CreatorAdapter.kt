@@ -7,32 +7,25 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import ru.skriplenok.shoppinglist.BR
+import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
 import ru.skriplenok.shoppinglist.viewmodel.ProductCellViewModel
-import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 
-class ProductsAdapter(
+class CreatorAdapter(
     @LayoutRes private val layoutId: Int,
-    private val viewModel: ProductsViewModel
-): RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
+    private val viewModel: CreatorViewModel
+): RecyclerView.Adapter<CreatorAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemInflater = LayoutInflater.from(parent.context)
         val dataBinding: ViewDataBinding = DataBindingUtil.inflate(itemInflater, viewType, parent, false)
-
         return ViewHolder(dataBinding)
     }
 
-    override fun getItemCount(): Int {
-        return viewModel.itemCount
-    }
+    override fun getItemCount(): Int = viewModel.itemCount
 
-    override fun getItemViewType(position: Int): Int {
-        return layoutId
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(viewModel, position)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(viewModel, position)
-    }
+    override fun getItemViewType(position: Int): Int = layoutId
 
     class ViewHolder(private val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 

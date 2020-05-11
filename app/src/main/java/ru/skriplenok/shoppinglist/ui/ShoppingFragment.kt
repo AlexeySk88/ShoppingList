@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import ru.skriplenok.shoppinglist.R
+import ru.skriplenok.shoppinglist.R.id.toolbarAdd
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Arguments
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
@@ -42,11 +43,17 @@ class ShoppingFragment: Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId === toolbarAdd) {
+            navController.navigate(R.id.creatorFragment)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setBindings(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this).get(ShoppingViewModel::class.java)
-        val binding = DataBindingUtil.setContentView<ShoppingFragmentBinding>(
-            activity!!,
-            R.layout.shopping_fragment)
+        val binding =
+            DataBindingUtil.setContentView<ShoppingFragmentBinding>(activity!!, R.layout.shopping_fragment)
 
         if(savedInstanceState == null) {
             viewModel.init()

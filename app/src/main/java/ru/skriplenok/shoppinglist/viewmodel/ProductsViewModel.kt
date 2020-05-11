@@ -10,7 +10,7 @@ import ru.skriplenok.shoppinglist.models.ProductsModel
 import ru.skriplenok.shoppinglist.repositories.FakeRepositories
 import ru.skriplenok.shoppinglist.repositories.Repository
 
-class ProductsViewModel: ViewModel() {
+class ProductsViewModel: ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     val loading: ObservableInt = ObservableInt(View.GONE)
@@ -31,11 +31,13 @@ class ProductsViewModel: ViewModel() {
         adapter.notifyDataSetChanged()
     }
 
-    fun getItem(position: Int): ProductsModel? {
+    override fun getItem(position: Int): ProductsModel? {
         if (position < productList.size) {
             return productList[position]
         }
 
         return null
     }
+
+    override fun getVisible(): Boolean = true
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/shoppingFragment">
 
     <fragment
@@ -10,6 +12,9 @@
         <action
             android:id="@+id/action_shoppingListFragment_to_newListFragments"
             app:destination="@id/productsFragment" />
+        <action
+            android:id="@+id/action_shoppingFragment_to_creatorFragment"
+            app:destination="@id/creatorFragment" />
     </fragment>
 
     <fragment
@@ -20,4 +25,10 @@
             android:name="ShoppingArgument"
             app:argType="ru.skriplenok.shoppinglist.models.ShoppingModel" />
     </fragment>
+
+    <fragment
+        android:id="@+id/creatorFragment"
+        android:name="ru.skriplenok.shoppinglist.ui.CreatorFragment"
+        android:label="creator_fragment"
+        tools:layout="@layout/creator_fragment" />
 </navigation>
