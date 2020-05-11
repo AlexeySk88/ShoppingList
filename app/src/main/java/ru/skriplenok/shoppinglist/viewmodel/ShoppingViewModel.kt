@@ -27,14 +27,13 @@ class ShoppingViewModel: ViewModel() {
         longSelected.value = null
     }
 
-    fun fetchData(): List<ShoppingModel> { //TODO заменить на liveData
+    //TODO заменить на liveData
+    fun fetchData(): List<ShoppingModel> {
         shoppingList = repository.fetchShoppingList()
         return shoppingList
     }
 
-    fun setModelInAdapter() {
-        adapter.notifyDataSetChanged()
-    }
+    fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
     fun getItem(position: Int): ShoppingModel? {
         if (position < shoppingList.size) {

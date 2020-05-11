@@ -1,9 +1,7 @@
 package ru.skriplenok.shoppinglist.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,27 +14,28 @@ import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 class ProductsFragment: Fragment() {
 
     private lateinit var viewModel: ProductsViewModel
+    private var argument: ShoppingModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val shoppingModel = getBundle()
-        setBindings(savedInstanceState, shoppingModel.id)
+        setArgument()
+        setBindings(savedInstanceState)
         return inflater.inflate(R.layout.products_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.title = argument?.name
     }
 
-    private fun getBundle(): ShoppingModel {
-        val argument = arguments?.getParcelable<ShoppingModel>(Arguments.SHOPPING_ARGUMENT.value)
-        return argument!! // TODO добавить обратчик null
+    private fun setArgument() {
+        argument = arguments?.getParcelable(Arguments.SHOPPING_ARGUMENT.value)
     }
 
-    private fun setBindings(savedInstanceState: Bundle?, listId: Int) {
+    private fun setBindings(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this).get(ProductsViewModel::class.java)
         val binding = DataBindingUtil.setContentView<ProductsFragmentBinding>(
             activity!!,
@@ -47,7 +46,9 @@ class ProductsFragment: Fragment() {
             viewModel.init()
         }
 
-        viewModel.fetchData(listId)
+        if (argument !== null ) {
+            viewModel.fetchData(argument!!.id)
+        }
         binding.model = viewModel
         setupListUpdate()
     }

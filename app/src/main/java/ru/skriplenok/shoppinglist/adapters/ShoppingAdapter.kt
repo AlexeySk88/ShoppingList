@@ -21,17 +21,11 @@ class ShoppingAdapter(
         return ViewHolder(dataBinding)
     }
 
-    override fun getItemCount(): Int {
-        return viewModel.countItems
-    }
+    override fun getItemCount(): Int = viewModel.countItems
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(viewModel, position)
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(viewModel, position)
 
-    override fun getItemViewType(position: Int): Int {
-        return layoutId
-    }
+    override fun getItemViewType(position: Int): Int = layoutId
 
     class ViewHolder(private val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 

@@ -18,21 +18,14 @@ class ProductsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemInflater = LayoutInflater.from(parent.context)
         val dataBinding: ViewDataBinding = DataBindingUtil.inflate(itemInflater, viewType, parent, false)
-
         return ViewHolder(dataBinding)
     }
 
-    override fun getItemCount(): Int {
-        return viewModel.itemCount
-    }
+    override fun getItemCount(): Int = viewModel.itemCount
 
-    override fun getItemViewType(position: Int): Int {
-        return layoutId
-    }
+    override fun getItemViewType(position: Int): Int = layoutId
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(viewModel, position)
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(viewModel, position)
 
     class ViewHolder(private val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 

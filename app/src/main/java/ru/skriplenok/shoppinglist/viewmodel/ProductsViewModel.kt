@@ -27,15 +27,12 @@ class ProductsViewModel: ViewModel(), ProductCellViewModel {
         return productList
     }
 
-    fun setModelInAdapter() {
-        adapter.notifyDataSetChanged()
-    }
+    fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
     override fun getItem(position: Int): ProductsModel? {
         if (position < productList.size) {
             return productList[position]
         }
-
         return null
     }
 
