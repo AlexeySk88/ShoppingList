@@ -84,6 +84,7 @@
 
             <Spinner
                 android:id="@+id/spinner"
+                app:setAdapter="@{model.spinnerAdapter}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -92,9 +93,10 @@
 
             <Button
                 android:id="@+id/productSave"
+                android:text="Сохранить"
+                android:onClick="@{() -> model.onClickSave()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сохранить"
                 app:layout_constraintTop_toBottomOf="@id/spinner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>

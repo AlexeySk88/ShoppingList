@@ -29,6 +29,7 @@
             <CheckBox
                 android:id="@+id/productListCheckBox"
                 android:checked="@{mod.getItem(pos).status}"
+                android:visibility="@{mod.getVisible()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleX="1.7"

@@ -36,5 +36,5 @@ class ProductsViewModel: ViewModel(), ProductCellViewModel {
         return null
     }
 
-    override fun getVisible(): Boolean = true
+    override fun getVisible(): Int = View.VISIBLE
 }

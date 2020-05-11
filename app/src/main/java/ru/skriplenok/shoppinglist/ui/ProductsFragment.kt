@@ -37,10 +37,8 @@ class ProductsFragment: Fragment() {
 
     private fun setBindings(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this).get(ProductsViewModel::class.java)
-        val binding = DataBindingUtil.setContentView<ProductsFragmentBinding>(
-            activity!!,
-            R.layout.products_fragment
-        )
+        val binding =
+            DataBindingUtil.setContentView<ProductsFragmentBinding>(activity!!, R.layout.products_fragment)
 
         if (savedInstanceState == null) {
             viewModel.init()

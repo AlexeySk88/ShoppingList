@@ -36,10 +36,10 @@ class CreatorFragment: Fragment() {
     private fun setBinding(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this).get(CreatorViewModel::class.java)
         val binding =
-            DataBindingUtil.setContentView<CreatorFragmentBinding>(activity!!, R.layout.creator_fragment
-        )
+            DataBindingUtil.setContentView<CreatorFragmentBinding>(activity!!, R.layout.creator_fragment)
 
+        viewModel.init(context ?: requireContext())
         binding.model = viewModel
-        viewModel.setupAdapter()
+        viewModel.setModelInAdapter()
     }
 }
