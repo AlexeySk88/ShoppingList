@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/toolbarEdit"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_mode_edit_24dp"
+        android:title="toolbarEdit" />
+    <item
+        android:id="@+id/toolbarDelete"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_delete_forever_24dp"
+        android:title="toolbarDelete" />
+    <item
+        android:id="@+id/toolbarShare"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_share_24dp"
+        android:title="toolbarShare" />
+</menu>

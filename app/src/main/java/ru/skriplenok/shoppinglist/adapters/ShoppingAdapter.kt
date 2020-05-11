@@ -1,6 +1,5 @@
 package ru.skriplenok.shoppinglist.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -41,18 +40,14 @@ class ShoppingAdapter(
             binding.setVariable(BR.model, viewModel)
             binding.executePendingBindings()
 
-
-//            (dataBinding as ShoppingCellBinding).data = model
-//
-//            itemView.apply {
-//                setOnClickListener{
-//                    clickListener.onItemClicked(model)
-//                }
-//                setOnLongClickListener{
-//                    clickListener.onItemLongClicked(model)
-//                    true
-//                }
-//            }
+            itemView.apply {
+                setOnClickListener {
+                    viewModel.onClick(position)
+                }
+                setOnLongClickListener {
+                    viewModel.onLongClick(position)
+                }
+            }
         }
     }
 }

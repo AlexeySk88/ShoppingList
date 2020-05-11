@@ -17,12 +17,14 @@ class ShoppingViewModel: ViewModel() {
     val countItems: Int
         get() = shoppingList.count()
     val selected: MutableLiveData<ShoppingModel> = MutableLiveData()
+    val longSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
 
     private val repository: Repository = FakeRepositories()
     private var shoppingList: List<ShoppingModel> = mutableListOf()
 
     fun init() {
         selected.value = null
+        longSelected.value = null
     }
 
     fun fetchData(): List<ShoppingModel> { //TODO заменить на liveData
@@ -42,7 +44,11 @@ class ShoppingViewModel: ViewModel() {
     }
 
     fun onClick(position: Int) {
-        val item = getItem(position)
-        selected.value = item
+        selected.value = getItem(position)
+    }
+
+    fun onLongClick(position: Int): Boolean {
+        longSelected.value = getItem(position)
+        return true
     }
 }
