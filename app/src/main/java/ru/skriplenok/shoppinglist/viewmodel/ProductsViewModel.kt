@@ -14,8 +14,6 @@ class ProductsViewModel: ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     val loading: ObservableInt = ObservableInt(View.GONE)
-    val itemCount: Int
-        get() = productList.size
 
     private val repository: Repository = FakeRepositories()
     private var productList: List<ProductsModel> = mutableListOf()
@@ -37,4 +35,6 @@ class ProductsViewModel: ViewModel(), ProductCellViewModel {
     }
 
     override fun getVisible(): Int = View.VISIBLE
+
+    override fun itemCount(): Int =  productList.size
 }

@@ -6,18 +6,16 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModel
 import ru.skriplenok.shoppinglist.R
-import ru.skriplenok.shoppinglist.adapters.CreatorAdapter
+import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.models.ProductsModel
 import ru.skriplenok.shoppinglist.models.QuantityType
 
 class CreatorViewModel: ViewModel(), ProductCellViewModel {
 
-    val adapter: CreatorAdapter = CreatorAdapter(R.layout.product_cell, this)
+    val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     var spinnerAdapter: ArrayAdapter<String>? = null
-    val itemCount: Int
-        get() = productList.size
 
-    private val productList: List<ProductsModel> = mutableListOf(ProductsModel(0, "Сахар", "3 шт.", false))
+    private val productList: MutableList<ProductsModel> = mutableListOf()
 
     fun init(context: Context) {
         val spinnerTypes: MutableList<String> = mutableListOf()
@@ -38,12 +36,14 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
         return null
     }
 
-    override fun getVisible(): Int = View.VISIBLE
+    override fun getVisible(): Int = View.GONE
+
+    override fun itemCount(): Int = productList.size
 
     fun onClickSave() {
         val productModel = ProductsModel(0, "Сахар", "3 шт.", false)
-//        productList.add(productModel)
+        productList.add(productModel)
 
-        adapter.notifyItemInserted(itemCount - 1)
+        adapter.notifyItemInserted(itemCount() - 1)
     }
 }

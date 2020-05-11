@@ -6,7 +6,7 @@
             type="Integer" />
         <variable
             name="mod"
-            type="ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel" />
+            type="ru.skriplenok.shoppinglist.viewmodel.ProductCellViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView

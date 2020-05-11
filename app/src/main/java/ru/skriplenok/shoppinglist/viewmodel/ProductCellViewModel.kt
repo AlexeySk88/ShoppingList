@@ -7,4 +7,5 @@ interface ProductCellViewModel {
 
     fun getItem(position: Int): ProductsModel?
     fun getVisible(): Int
+    fun itemCount(): Int
 }
