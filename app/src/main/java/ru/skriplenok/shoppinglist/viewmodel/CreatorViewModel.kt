@@ -1,9 +1,10 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
@@ -14,10 +15,36 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     var spinnerAdapter: ArrayAdapter<String>? = null
+    val title: ObservableField<String> = ObservableField()
+    val productsNumber: ObservableField<String> = ObservableField()
+        get() {
+            if (productList.size > 0 ) {
+                field.set("Товаров в списке: " + productList.size)
+            } else {
+                field.set("Добавьте в список хотя бы один товар")
+            }
+            return field
+        }
+    val name: ObservableField<String> = ObservableField()
+    val count: ObservableField<String> = ObservableField()
+    val indexType: ObservableInt = ObservableInt()
 
     private val productList: MutableList<ProductsModel> = mutableListOf()
 
     fun init(context: Context) {
+        setProductsNumber()
+        setSpinnerAdapter(context)
+    }
+
+    private fun setProductsNumber() {
+        if (productList.size > 0 ) {
+            productsNumber.set("Товаров в списке: " + productList.size)
+            return
+        }
+        productsNumber.set("Добавьте в список хотя бы один товар")
+    }
+
+    private fun setSpinnerAdapter(context: Context) {
         val spinnerTypes: MutableList<String> = mutableListOf()
         for(quantityType in QuantityType.values()) {
             spinnerTypes.add(quantityType.value.name)
@@ -29,7 +56,6 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
     fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
     override fun getItem(position: Int): ProductsModel? {
-        Log.d("CLICK", "SAVE")
         if(position < productList.size) {
             return productList[position]
         }
@@ -41,9 +67,12 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
     override fun itemCount(): Int = productList.size
 
     fun onClickSave() {
-        val productModel = ProductsModel(0, "Сахар", "3 шт.", false)
+        val type = QuantityType.values()[indexType.get()]
+        val quantity = count.get() + " " + type.value.shortName
+        val productModel = ProductsModel(0, name.get(), quantity, false)
         productList.add(productModel)
-
         adapter.notifyItemInserted(itemCount() - 1)
+
+        setProductsNumber()
     }
 }

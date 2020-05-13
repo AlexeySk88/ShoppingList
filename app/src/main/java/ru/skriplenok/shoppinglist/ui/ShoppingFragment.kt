@@ -44,7 +44,7 @@ class ShoppingFragment: Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId === toolbarAdd) {
+        if (item.itemId == toolbarAdd) {
             navController.navigate(R.id.creatorFragment)
         }
         return super.onOptionsItemSelected(item)

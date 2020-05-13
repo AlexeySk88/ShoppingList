@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="normal_text">18sp</dimen>
+
     <dimen name="card_view_elevation">4dp</dimen>
     <dimen name="card_view_coroner_radius">4dp</dimen>
     <dimen name="card_view_margin">4dp</dimen>
@@ -15,4 +17,10 @@
     <dimen name="products_title_text">22sp</dimen>
     <dimen name="product_title_left_margin">20dp</dimen>
     <dimen name="products_vertical_padding">10dp</dimen>
+
+    <dimen name="creator_horizontal_margin">20dp</dimen>
+    <dimen name="creator_spinner_margin_start">20dp</dimen>
+    <dimen name="creator_quantity_text_width">120dp</dimen>
+    <dimen name="creator_listView_margin_top">20dp</dimen>
+    <dimen name="creator_def_margin_top">10dp</dimen>
 </resources>

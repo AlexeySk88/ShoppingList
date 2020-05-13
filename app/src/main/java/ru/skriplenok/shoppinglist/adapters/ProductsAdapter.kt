@@ -1,6 +1,5 @@
 package ru.skriplenok.shoppinglist.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -9,7 +8,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import ru.skriplenok.shoppinglist.BR
 import ru.skriplenok.shoppinglist.viewmodel.ProductCellViewModel
-import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 
 class ProductsAdapter(
     @LayoutRes private val layoutId: Int,
@@ -17,7 +15,6 @@ class ProductsAdapter(
 ): RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d("CLICK", "ADAPTER")
         val itemInflater = LayoutInflater.from(parent.context)
         val dataBinding: ViewDataBinding = DataBindingUtil.inflate(itemInflater, viewType, parent, false)
         return ViewHolder(dataBinding)
