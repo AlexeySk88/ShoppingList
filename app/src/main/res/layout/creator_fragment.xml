@@ -53,12 +53,14 @@
             app:setAdapter="@{model.adapter}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/creator_listView_margin_top"
             android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toTopOf="@+id/newProductLayout"
             app:layout_constraintTop_toBottomOf="@id/separator"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/newProductLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent">
