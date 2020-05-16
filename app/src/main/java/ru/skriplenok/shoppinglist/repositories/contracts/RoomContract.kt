@@ -6,5 +6,6 @@ class RoomContract {
         const val DATABASE_NAME: String = "ShoppingList.db"
         const val TABLE_SHOPPING: String = "shopping"
         const val TABLE_PRODUCTS: String = "products"
+        const val TABLE_PRODUCT_TYPE: String = "product_type"
     }
 }

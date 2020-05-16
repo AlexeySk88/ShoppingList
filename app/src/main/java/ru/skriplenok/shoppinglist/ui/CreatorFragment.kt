@@ -49,7 +49,7 @@ class CreatorFragment: Fragment() {
         val binding =
             DataBindingUtil.setContentView<CreatorFragmentBinding>(activity!!, R.layout.creator_fragment)
 
-        viewModel.init(context ?: requireContext())
+        viewModel.init(requireContext())
         binding.model = viewModel
         viewModel.setModelInAdapter()
     }
