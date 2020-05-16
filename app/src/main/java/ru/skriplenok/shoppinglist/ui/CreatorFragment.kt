@@ -4,17 +4,20 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.CreatorFragmentBinding
 import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
+import ru.skriplenok.shoppinglist.viewmodel.InjectorViewModel
 
 class CreatorFragment: Fragment() {
 
-    private lateinit var viewModel: CreatorViewModel
     private lateinit var navController: NavController;
+    private val viewModel by viewModels<CreatorViewModel> {
+        InjectorViewModel.provideCreatorViewModel(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,11 +48,9 @@ class CreatorFragment: Fragment() {
     }
 
     private fun setBinding(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this).get(CreatorViewModel::class.java)
         val binding =
-            DataBindingUtil.setContentView<CreatorFragmentBinding>(activity!!, R.layout.creator_fragment)
+            DataBindingUtil.setContentView<CreatorFragmentBinding>(requireActivity(), R.layout.creator_fragment)
 
-        viewModel.init(requireContext())
         binding.model = viewModel
         viewModel.setModelInAdapter()
     }

@@ -5,13 +5,20 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.models.ProductsModel
 import ru.skriplenok.shoppinglist.models.QuantityType
+import ru.skriplenok.shoppinglist.models.QuantityTypeModel
+import ru.skriplenok.shoppinglist.repositories.ProductTypeRepository
 
-class CreatorViewModel: ViewModel(), ProductCellViewModel {
+class CreatorViewModel(
+    typeRepository: ProductTypeRepository,
+    context: Context,
+    private val handle: SavedStateHandle
+): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     var spinnerAdapter: ArrayAdapter<String>? = null
@@ -29,9 +36,10 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
     val count: ObservableField<String> = ObservableField()
     val indexType: ObservableInt = ObservableInt()
 
+    private val quantityTypes: List<QuantityTypeModel> = typeRepository.getAll()
     private val productList: MutableList<ProductsModel> = mutableListOf()
 
-    fun init(context: Context) {
+    init {
         setProductsNumber()
         setSpinnerAdapter(context)
     }
@@ -46,8 +54,8 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
 
     private fun setSpinnerAdapter(context: Context) {
         val spinnerTypes: MutableList<String> = mutableListOf()
-        for(quantityType in QuantityType.values()) {
-            spinnerTypes.add(quantityType.value.name)
+        for(quantityType in quantityTypes) {
+            spinnerTypes.add(quantityType.shortName)
         }
         spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
         spinnerAdapter!!.setDropDownViewResource(R.layout.spinner_item)
@@ -67,8 +75,8 @@ class CreatorViewModel: ViewModel(), ProductCellViewModel {
     override fun itemCount(): Int = productList.size
 
     fun onClickSave() {
-        val type = QuantityType.values()[indexType.get()]
-        val quantity = count.get() + " " + type.value.shortName
+        val type = quantityTypes[indexType.get()]
+        val quantity = count.get() + " " + type.shortName
         val productModel = ProductsModel(0, name.get(), quantity, false)
         productList.add(productModel)
         adapter.notifyItemInserted(itemCount() - 1)

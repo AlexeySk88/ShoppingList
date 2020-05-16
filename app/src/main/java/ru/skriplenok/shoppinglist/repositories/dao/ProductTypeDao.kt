@@ -11,7 +11,7 @@ import ru.skriplenok.shoppinglist.repositories.dto.ProductTypeDto
 interface ProductTypeDao {
 
     @Query("SELECT * FROM ${RoomContract.TABLE_PRODUCT_TYPE}")
-    fun getAll(): List<ProductTypeDto>
+    suspend fun getAll(): List<ProductTypeDto>
 
     @Insert
     fun insert(dto: ProductTypeDto)
