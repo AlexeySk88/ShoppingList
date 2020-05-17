@@ -38,8 +38,6 @@ class ShoppingDaoTest {
     private val product2 = ProductDto(2, 1, 1, "b", 2F)
     private val product3 = ProductDto(3, 1, 1, "c", 3F)
 
-
-
     @Before
     fun createDb() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext

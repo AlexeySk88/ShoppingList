@@ -58,6 +58,7 @@ class ShoppingFragment: Fragment() {
         val binding =
             DataBindingUtil.setContentView<ShoppingFragmentBinding>(activity!!, R.layout.shopping_fragment)
 
+        viewModel.init()
         binding.model = viewModel
         setupListUpdate()
     }
@@ -74,12 +75,16 @@ class ShoppingFragment: Fragment() {
     private fun setupListClick() {
         viewModel.selected.observe(viewLifecycleOwner, Observer {
             if (it !== null) {
-                val bundle = bundleOf(Arguments.SHOPPING_ARGUMENT.value to it)
+                val bundle = bundleOf(
+                    Arguments.SHOPPING_ID.value to it.shopping.id,
+                    Arguments.SHOPPING_TITLE.value to it.shopping.name
+                )
                 navController.navigate(R.id.productsFragment, bundle)
             }
         })
     }
 
+    //TODO завершить ActionMode при переходе на другой фрагмент
     private fun setupLongListClick() {
         viewModel.longSelected.observe(viewLifecycleOwner, Observer {
             if ((it !== null) and (mActionMode === null)) {

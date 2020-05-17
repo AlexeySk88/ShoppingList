@@ -12,7 +12,7 @@ import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 
 class ShoppingViewModel(
-    shoppingRepository: ShoppingRepository,
+    private val shoppingRepository: ShoppingRepository,
     handle: SavedStateHandle
 ): ViewModel() {
 
@@ -26,7 +26,9 @@ class ShoppingViewModel(
     //TODO заменить на liveData
     private var shoppingList: List<ShoppingWithCount> = mutableListOf()
 
-    init {
+    fun init() {
+        selected.value = null
+        longSelected.value = null
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
         }

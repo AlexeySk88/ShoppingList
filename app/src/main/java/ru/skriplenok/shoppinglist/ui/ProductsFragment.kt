@@ -1,20 +1,22 @@
 package ru.skriplenok.shoppinglist.ui
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Arguments
-import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 
 class ProductsFragment: Fragment() {
 
     private lateinit var viewModel: ProductsViewModel
-    private var argument: ShoppingModel? = null
+    private var shoppingId: Int? = null
+    private var shoppingTitle: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,11 +30,12 @@ class ProductsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.title = argument?.name
+        activity?.title = shoppingTitle
     }
 
     private fun setArgument() {
-        argument = arguments?.getParcelable(Arguments.SHOPPING_ARGUMENT.value)
+        shoppingId = arguments?.getInt(Arguments.SHOPPING_ID.value)
+        shoppingTitle = arguments?.getString(Arguments.SHOPPING_TITLE.value)
     }
 
     private fun setBindings(savedInstanceState: Bundle?) {
@@ -44,8 +47,8 @@ class ProductsFragment: Fragment() {
             viewModel.init()
         }
 
-        if (argument !== null ) {
-            viewModel.fetchData(argument!!.id)
+        if (shoppingId !== null ) {
+            viewModel.fetchData(shoppingId!!)
         }
         binding.model = viewModel
         setupListUpdate()
