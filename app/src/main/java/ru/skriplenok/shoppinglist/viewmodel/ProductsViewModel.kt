@@ -8,8 +8,7 @@ import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.helpers.Convectors
-import ru.skriplenok.shoppinglist.models.ProductsModel
-import ru.skriplenok.shoppinglist.repositories.Converters
+import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 
@@ -22,7 +21,7 @@ class ProductsViewModel(
     val loading: ObservableInt = ObservableInt(View.GONE)
 
     private var productDtoList: List<ProductDto> = mutableListOf()
-    private var productList: List<ProductsModel> = mutableListOf()
+    private var productList: List<ProductModel> = mutableListOf()
 
     fun init(shoppingId: Int) {
         runBlocking {
@@ -33,7 +32,7 @@ class ProductsViewModel(
 
     fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
-    override fun getItem(position: Int): ProductsModel? {
+    override fun getItem(position: Int): ProductModel? {
         if (position < productDtoList.size) {
             return productList[position]
         }

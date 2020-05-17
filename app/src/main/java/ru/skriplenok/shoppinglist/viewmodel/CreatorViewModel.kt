@@ -8,16 +8,13 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.helpers.Constants
-import ru.skriplenok.shoppinglist.models.ProductsModel
-import ru.skriplenok.shoppinglist.models.QuantityTypeModel
-import ru.skriplenok.shoppinglist.repositories.ProductTypeRepository
+import ru.skriplenok.shoppinglist.helpers.QuantityTypes
+import ru.skriplenok.shoppinglist.models.ProductModel
 
 class CreatorViewModel(
-    typeRepository: ProductTypeRepository,
     context: Context,
     handle: SavedStateHandle
 ): ViewModel(), ProductCellViewModel {
@@ -39,13 +36,10 @@ class CreatorViewModel(
     val indexType: ObservableInt = ObservableInt()
     val toastMessage: MutableLiveData<String> = MutableLiveData()
 
-    private var quantityTypes: List<QuantityTypeModel> = mutableListOf()
-    private val productList: MutableList<ProductsModel> = mutableListOf()
+    private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
+    private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {
-        runBlocking {
-            quantityTypes = typeRepository.getAll()
-        }
         setSpinnerAdapter(context)
         setProductsNumber()
     }
@@ -60,14 +54,14 @@ class CreatorViewModel(
 
     private fun setSpinnerAdapter(context: Context) {
         val spinnerTypes: MutableList<String> = mutableListOf()
-        for(quantityType in quantityTypes) {
-            spinnerTypes.add(quantityType.shortName)
+        for(quantityType in quantityTypes.list) {
+            spinnerTypes.add(quantityType.fullName)
         }
         spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
         spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
     }
 
-    override fun getItem(position: Int): ProductsModel? {
+    override fun getItem(position: Int): ProductModel? {
         if(position < productList.size) {
             return productList[position]
         }
@@ -82,9 +76,8 @@ class CreatorViewModel(
         if (!validateProduct()) {
             return
         }
-        val type = quantityTypes[indexType.get()]
-        val quantity = count.get() + " " + type.shortName
-        val productModel = ProductsModel(0, name.get()!!, quantity, false)
+        val type = quantityTypes.list[indexType.get()]
+        val productModel = ProductModel(0, name.get()!!, count.get()!!, type.shortName, false)
         productList.add(productModel)
         adapter.notifyItemInserted(itemCount() - 1)
     }

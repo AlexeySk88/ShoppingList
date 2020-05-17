@@ -1,31 +1,20 @@
 package ru.skriplenok.shoppinglist.helpers
 
-import ru.skriplenok.shoppinglist.models.ProductsModel
-import ru.skriplenok.shoppinglist.models.QuantityTypeModel
+import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
-import ru.skriplenok.shoppinglist.repositories.dto.ProductTypeDto
 
 object Convectors {
 
-    fun productTypeDtoToQuantityTypeModel(dto: ProductTypeDto): QuantityTypeModel {
-        return QuantityTypeModel(dto.id, dto.shortName, dto.fullName)
+    private val quantityTypes = QuantityTypes.getInstance()
+
+    //TODO добавить обработчик ошибок
+    fun productDtoToProductModel(dto: ProductDto): ProductModel {
+        return ProductModel(dto.id, dto.name, dto.quantity.toString(),
+            (quantityTypes.map[dto.id] ?: error("")).shortName, dto.selectedDate == null)
     }
 
-    fun productTypeDtoToQuantityTypeModel(dtoList: List<ProductTypeDto>): List<QuantityTypeModel> {
-        val models = mutableListOf<QuantityTypeModel>()
-        for (dto in dtoList) {
-            models.add(productTypeDtoToQuantityTypeModel(dto))
-        }
-
-        return models
-    }
-
-    fun productDtoToProductModel(dto: ProductDto): ProductsModel {
-        return ProductsModel(dto.id, dto.name, "1 шт.", dto.selectedDate == null)
-    }
-
-    fun productDtoToProductModel(dtoList: List<ProductDto>): List<ProductsModel> {
-        val models = mutableListOf<ProductsModel>()
+    fun productDtoToProductModel(dtoList: List<ProductDto>): List<ProductModel> {
+        val models = mutableListOf<ProductModel>()
         for (dto in dtoList) {
             models.add(productDtoToProductModel(dto))
         }

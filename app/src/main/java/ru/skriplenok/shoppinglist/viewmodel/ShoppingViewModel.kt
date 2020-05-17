@@ -5,6 +5,8 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
@@ -27,6 +29,7 @@ class ShoppingViewModel(
     private var shoppingList: List<ShoppingWithCount> = mutableListOf()
 
     fun init() {
+        viewModelScope.launch {  }
         selected.value = null
         longSelected.value = null
         runBlocking {
