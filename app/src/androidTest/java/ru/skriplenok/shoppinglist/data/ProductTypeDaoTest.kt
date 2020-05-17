@@ -39,7 +39,7 @@ class ProductTypeDaoTest {
     }
 
     @Test
-    fun testGetAllProductType() {
+    fun testGetAllProductType() = runBlocking {
         val productTypeList = dao.getAll()
         assertEquals(3, productTypeList.size)
 

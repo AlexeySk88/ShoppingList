@@ -1,16 +1,17 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.models.ProductsModel
-import ru.skriplenok.shoppinglist.models.QuantityType
 import ru.skriplenok.shoppinglist.models.QuantityTypeModel
 import ru.skriplenok.shoppinglist.repositories.ProductTypeRepository
 
@@ -36,12 +37,16 @@ class CreatorViewModel(
     val count: ObservableField<String> = ObservableField()
     val indexType: ObservableInt = ObservableInt()
 
-    private val quantityTypes: List<QuantityTypeModel> = typeRepository.getAll()
+    private var quantityTypes: List<QuantityTypeModel> = mutableListOf()
     private val productList: MutableList<ProductsModel> = mutableListOf()
 
     init {
-        setProductsNumber()
+        runBlocking {
+            quantityTypes = typeRepository.getAll()
+        }
+        Log.d("TYPE", quantityTypes.size.toString())
         setSpinnerAdapter(context)
+        setProductsNumber()
     }
 
     private fun setProductsNumber() {
@@ -58,7 +63,7 @@ class CreatorViewModel(
             spinnerTypes.add(quantityType.shortName)
         }
         spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
-        spinnerAdapter!!.setDropDownViewResource(R.layout.spinner_item)
+        spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
     }
 
     fun setModelInAdapter() = adapter.notifyDataSetChanged()
