@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
-import ru.skriplenok.shoppinglist.helpers.Arguments
+import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 
 class ProductsFragment: Fragment() {
@@ -34,8 +34,8 @@ class ProductsFragment: Fragment() {
     }
 
     private fun setArgument() {
-        shoppingId = arguments?.getInt(Arguments.SHOPPING_ID.value)
-        shoppingTitle = arguments?.getString(Arguments.SHOPPING_TITLE.value)
+        shoppingId = arguments?.getInt(Constants.SHOPPING_ID.value)
+        shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
     }
 
     private fun setBindings(savedInstanceState: Bundle?) {

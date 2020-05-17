@@ -2,9 +2,11 @@ package ru.skriplenok.shoppinglist.ui
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import ru.skriplenok.shoppinglist.R
@@ -41,9 +43,11 @@ class CreatorFragment: Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.toolbarClose) {
-           navController.popBackStack()
+        when(item.itemId) {
+            R.id.toolbarClose -> navController.popBackStack()
+            R.id.toolbarSave -> viewModel.onClickShoppingSave()
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -52,6 +56,14 @@ class CreatorFragment: Fragment() {
             DataBindingUtil.setContentView<CreatorFragmentBinding>(requireActivity(), R.layout.creator_fragment)
 
         binding.model = viewModel
-        viewModel.setModelInAdapter()
+        setupToastMessage()
+    }
+
+    private fun setupToastMessage() {
+        viewModel.toastMessage.observe(viewLifecycleOwner, Observer {
+            if (it !== null) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

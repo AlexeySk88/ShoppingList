@@ -9,13 +9,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.R.id.toolbarAdd
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
-import ru.skriplenok.shoppinglist.helpers.Arguments
+import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.viewmodel.InjectorViewModel
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 
@@ -76,8 +75,8 @@ class ShoppingFragment: Fragment() {
         viewModel.selected.observe(viewLifecycleOwner, Observer {
             if (it !== null) {
                 val bundle = bundleOf(
-                    Arguments.SHOPPING_ID.value to it.shopping.id,
-                    Arguments.SHOPPING_TITLE.value to it.shopping.name
+                    Constants.SHOPPING_ID.value to it.shopping.id,
+                    Constants.SHOPPING_TITLE.value to it.shopping.name
                 )
                 navController.navigate(R.id.productsFragment, bundle)
             }

@@ -8,7 +8,7 @@
         android:title="toolbarClose"/>
 
     <item
-        android:id="@+id/toolbarCheck"
+        android:id="@+id/toolbarSave"
         app:showAsAction="always"
         android:icon="@drawable/ic_check_24dp"
         android:title="toolbarCheck" />
