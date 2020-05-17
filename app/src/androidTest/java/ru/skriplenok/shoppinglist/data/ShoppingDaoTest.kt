@@ -82,15 +82,4 @@ class ShoppingDaoTest {
         assertEquals(1, archiveList.size)
         assertThat(archiveList[0], equalTo(shopping3))
     }
-
-    @Test
-    fun testGetShoppingProducts() {
-        val shopping = shoppingDao.getWithProducts(1)
-
-        assertNotNull(shopping.productList)
-        assertEquals(3, shopping.productList?.size)
-        assertEquals(shopping.productList?.get(0), product1)
-        assertEquals(shopping.productList?.get(1), product2)
-        assertEquals(shopping.productList?.get(2), product3)
-    }
 }

@@ -8,7 +8,7 @@ import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 interface ProductDao {
 
     @Query("SELECT * FROM ${RoomContract.TABLE_PRODUCTS} WHERE shopping_id = :id")
-    fun getByShoppingId(id: Int): List<ProductDto>
+    suspend fun getByShoppingId(id: Int): List<ProductDto>
 
     @Insert
     fun insert(dto: ProductDto)

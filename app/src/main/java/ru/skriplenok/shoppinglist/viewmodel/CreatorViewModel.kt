@@ -84,7 +84,7 @@ class CreatorViewModel(
         }
         val type = quantityTypes[indexType.get()]
         val quantity = count.get() + " " + type.shortName
-        val productModel = ProductsModel(0, name.get(), quantity, false)
+        val productModel = ProductsModel(0, name.get()!!, quantity, false)
         productList.add(productModel)
         adapter.notifyItemInserted(itemCount() - 1)
     }

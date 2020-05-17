@@ -1,9 +1,11 @@
 package ru.skriplenok.shoppinglist.repositories.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Transaction
 import ru.skriplenok.shoppinglist.repositories.contracts.RoomContract
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
-import ru.skriplenok.shoppinglist.repositories.dto.ShoppingProducts
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 
 @Dao
@@ -32,10 +34,6 @@ interface ShoppingDao {
             "AND closed_date IS NOT NULL " +
             "GROUP BY ${ RoomContract.TABLE_SHOPPING}.id")
     suspend fun getAllArchive(): List<ShoppingWithCount>
-
-    @Transaction
-    @Query( "SELECT * FROM ${RoomContract.TABLE_SHOPPING} WHERE id = :shoppingId")
-    fun getWithProducts(shoppingId: Int): ShoppingProducts
 
     @Insert
     fun insert(dto: ShoppingDto)

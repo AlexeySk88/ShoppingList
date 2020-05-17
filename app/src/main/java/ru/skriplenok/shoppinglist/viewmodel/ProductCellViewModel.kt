@@ -2,6 +2,7 @@ package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
 import ru.skriplenok.shoppinglist.models.ProductsModel
+import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 
 interface ProductCellViewModel {
 
