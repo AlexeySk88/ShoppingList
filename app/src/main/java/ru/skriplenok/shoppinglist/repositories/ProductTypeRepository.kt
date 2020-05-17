@@ -9,7 +9,7 @@ class ProductTypeRepository private constructor(private val dao: ProductTypeDao)
     private var model: List<QuantityTypeModel>? = null
 
     suspend fun getAll(): List<QuantityTypeModel> {
-        return model ?: Convectors.productTypeListToQuantityTypeList(dao.getAll()).also { model = it }
+        return model ?: Convectors.productTypeDtoToQuantityTypeModel(dao.getAll()).also { model = it }
     }
 
     companion object {

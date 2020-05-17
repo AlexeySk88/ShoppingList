@@ -18,7 +18,7 @@ import ru.skriplenok.shoppinglist.repositories.ProductTypeRepository
 class CreatorViewModel(
     typeRepository: ProductTypeRepository,
     context: Context,
-    private val handle: SavedStateHandle
+    handle: SavedStateHandle
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
@@ -44,7 +44,6 @@ class CreatorViewModel(
         runBlocking {
             quantityTypes = typeRepository.getAll()
         }
-        Log.d("TYPE", quantityTypes.size.toString())
         setSpinnerAdapter(context)
         setProductsNumber()
     }

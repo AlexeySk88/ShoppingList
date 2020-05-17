@@ -3,41 +3,48 @@ package ru.skriplenok.shoppinglist.viewmodel
 import android.view.View
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
-import ru.skriplenok.shoppinglist.models.ShoppingModel
-import ru.skriplenok.shoppinglist.repositories.FakeRepositories
-import ru.skriplenok.shoppinglist.repositories.Repository
+import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
+import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 
-class ShoppingViewModel: ViewModel() {
+class ShoppingViewModel(
+    shoppingRepository: ShoppingRepository,
+    handle: SavedStateHandle
+): ViewModel() {
 
     val loading: ObservableInt = ObservableInt(View.GONE)
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
     val countItems: Int
         get() = shoppingList.count()
-    val selected: MutableLiveData<ShoppingModel> = MutableLiveData()
-    val longSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
-
-    private val repository: Repository = FakeRepositories()
-    private var shoppingList: List<ShoppingModel> = mutableListOf()
-
-    fun init() {
-        selected.value = null
-        longSelected.value = null
-    }
+    val selected: MutableLiveData<ShoppingWithCount> = MutableLiveData()
+    val longSelected: MutableLiveData<ShoppingWithCount> = MutableLiveData()
 
     //TODO заменить на liveData
-    fun fetchData(): List<ShoppingModel> {
-        shoppingList = repository.fetchShoppingList()
-        return shoppingList
+    private var shoppingList: List<ShoppingWithCount> = mutableListOf()
+
+    init {
+        runBlocking {
+            shoppingList = shoppingRepository.getAllActive()
+        }
     }
 
     fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
-    fun getItem(position: Int): ShoppingModel? {
+    fun getItem(position: Int): ShoppingWithCount? {
         if (position < shoppingList.size) {
             return shoppingList[position]
+        }
+        return null
+    }
+
+    fun getCount(position: Int): String? {
+        if (position < shoppingList.size) {
+            val shopping = shoppingList[position]
+            return shopping.productsActive.toString() + "/" + shopping.productsAll.toString()
         }
         return null
     }

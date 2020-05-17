@@ -46,10 +46,32 @@ abstract class RoomAppDatabase: RoomDatabase() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         Executors.newSingleThreadScheduledExecutor()
-                            .execute { getDatabase(context).productTypeDao().insertAll(typeList) }
+                            .execute {
+                                getDatabase(context).apply {
+                                    shoppingDao().insertAll(shoppingList)
+                                    productTypeDao().insertAll(typeList)
+                                    productDao().insertAll(productList)
+                                }
+                            }
                     }
                 })
                 .build()
+
+        private val shoppingList = listOf(
+            ShoppingDto(1, "Продукты на неделю"),
+            ShoppingDto(2, "Бытовая химия")
+        )
+
+        private val productList = listOf(
+            ProductDto(1, 1, 5,"Горошек", 1F),
+            ProductDto(2, 1, 5,"Докторская колбаса", 1F),
+            ProductDto(3, 1, 5,"Огурец конс.", 1F),
+            ProductDto(4, 1, 5, "Майонез", 1F),
+
+            ProductDto(5, 2, 5, "Чай", 1F),
+            ProductDto(6, 2, 5, "Печенье", 1F),
+            ProductDto(7, 2, 5, "Сгущенка", 1F)
+        )
 
         private val typeList = listOf(
             ProductTypeDto(1, "грамм", "гр."),

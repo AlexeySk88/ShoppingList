@@ -61,7 +61,7 @@ class ShoppingDaoTest {
     }
 
     @Test
-    fun testGetAllShopping() {
+    fun testGetAllShopping() = runBlocking{
         val activeList = shoppingDao.getAllActive()
         val archiveList = shoppingDao.getAllArchive()
         val size = activeList.size + archiveList.size
@@ -69,7 +69,7 @@ class ShoppingDaoTest {
     }
 
     @Test
-    fun testGetAllActive() {
+    fun testGetAllActive() = runBlocking{
         val activeList = shoppingDao.getAllActive()
 
         assertEquals(2, activeList.size)
@@ -78,7 +78,7 @@ class ShoppingDaoTest {
     }
 
     @Test
-    fun testGetAllArchive() {
+    fun testGetAllArchive() = runBlocking{
         val archiveList = shoppingDao.getAllArchive()
 
         assertEquals(1, archiveList.size)
