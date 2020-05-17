@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="10 шт."
-                android:text="@{mod.getItem(pos).quantity}"
+                android:text="@{mod.getQuantity(pos)}"
                 android:textSize="@dimen/products_title_text"
                 android:layout_marginEnd="10dp"
                 app:layout_constraintTop_toTopOf="parent"

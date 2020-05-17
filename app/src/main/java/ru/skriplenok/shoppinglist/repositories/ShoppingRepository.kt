@@ -1,6 +1,7 @@
 package ru.skriplenok.shoppinglist.repositories
 
 import ru.skriplenok.shoppinglist.repositories.dao.ShoppingDao
+import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 
 class ShoppingRepository private constructor(private val dao: ShoppingDao){
@@ -9,6 +10,8 @@ class ShoppingRepository private constructor(private val dao: ShoppingDao){
     suspend fun getAllActive(): List<ShoppingWithCount> {
         return dao.getAllActive()
     }
+
+    suspend fun insert(dto: ShoppingDto) = dao.insert(dto).toInt()
 
     companion object {
 

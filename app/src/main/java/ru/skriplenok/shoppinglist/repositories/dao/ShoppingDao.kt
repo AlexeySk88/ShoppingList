@@ -36,7 +36,7 @@ interface ShoppingDao {
     suspend fun getAllArchive(): List<ShoppingWithCount>
 
     @Insert
-    fun insert(dto: ShoppingDto)
+    suspend fun insert(dto: ShoppingDto): Long
 
     @Insert
     fun insertAll(dtoList: List<ShoppingDto>)

@@ -11,7 +11,7 @@ import java.util.*
 data class ShoppingDto(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
 
     val name: String,
 
@@ -20,5 +20,5 @@ data class ShoppingDto(
 
     @ColumnInfo(name = "closed_date")
     val closedDate: Calendar? = null
-    ) {
+) {
 }

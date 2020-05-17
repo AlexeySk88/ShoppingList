@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
+import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 
@@ -49,7 +50,8 @@ class ShoppingViewModel(
     fun getCount(position: Int): String? {
         if (position < shoppingList.size) {
             val shopping = shoppingList[position]
-            return shopping.productsActive.toString() + "/" + shopping.productsAll.toString()
+            return StringHelper.getShoppingFraction(shopping.productsActive.toString(),
+                                                    shopping.productsAll.toString())
         }
         return null
     }

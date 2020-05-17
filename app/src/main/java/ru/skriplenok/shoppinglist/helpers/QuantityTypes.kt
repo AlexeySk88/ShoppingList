@@ -26,6 +26,7 @@ class QuantityTypes private constructor(list: List<ProductTypeDto>){
             instance = QuantityTypes(list)
         }
 
+        //TODO добавить обработчик ошибки на случай, если не задан instance
         fun getInstance() = instance!!
     }
 }

@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.repositories.contracts.RoomContract
 import ru.skriplenok.shoppinglist.repositories.dao.ProductDao
 import ru.skriplenok.shoppinglist.repositories.dao.ProductTypeDao
@@ -50,7 +51,10 @@ abstract class RoomAppDatabase: RoomDatabase() {
                                 getDatabase(context).apply {
                                     shoppingDao().insertAll(shoppingList)
                                     productTypeDao().insertAll(typeList)
-                                    productDao().insertAll(productList)
+
+                                    runBlocking {
+                                        productDao().insertAll(productList)
+                                    }
                                 }
                             }
                     }
@@ -63,14 +67,14 @@ abstract class RoomAppDatabase: RoomDatabase() {
         )
 
         private val productList = listOf(
-            ProductDto(1, 1, 5,"Горошек", 1F),
-            ProductDto(2, 1, 5,"Докторская колбаса", 1F),
-            ProductDto(3, 1, 5,"Огурец конс.", 1F),
-            ProductDto(4, 1, 5, "Майонез", 1F),
+            ProductDto(1, 1, 5,"Горошек", "1"),
+            ProductDto(2, 1, 5,"Докторская колбаса", "1"),
+            ProductDto(3, 1, 5,"Огурец конс.", "1"),
+            ProductDto(4, 1, 5, "Майонез", "1"),
 
-            ProductDto(5, 2, 5, "Чай", 1F),
-            ProductDto(6, 2, 5, "Печенье", 1F),
-            ProductDto(7, 2, 5, "Сгущенка", 1F)
+            ProductDto(5, 2, 5, "Чай", "1"),
+            ProductDto(6, 2, 5, "Печенье", "1"),
+            ProductDto(7, 2, 5, "Сгущенка", "1")
         )
 
         private val typeList = listOf(

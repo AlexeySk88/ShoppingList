@@ -15,7 +15,7 @@ import java.util.*
 data class ProductDto(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
 
     @ColumnInfo(name = "shopping_id")
     val shoppingId: Int,
@@ -25,7 +25,7 @@ data class ProductDto(
 
     val name: String,
 
-    val quantity: Float,
+    val quantity: String,
 
     @ColumnInfo(name = "created_date")
     val createdDate: Calendar = Calendar.getInstance(),

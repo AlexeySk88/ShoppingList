@@ -8,13 +8,20 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.helpers.QuantityTypes
+import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
+import ru.skriplenok.shoppinglist.repositories.ProductRepository
+import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
+import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
 
 class CreatorViewModel(
+    private val shoppingRepository: ShoppingRepository,
+    private val productRepository: ProductRepository,
     context: Context,
     handle: SavedStateHandle
 ): ViewModel(), ProductCellViewModel {
@@ -35,6 +42,7 @@ class CreatorViewModel(
     val count: ObservableField<String> = ObservableField()
     val indexType: ObservableInt = ObservableInt()
     val toastMessage: MutableLiveData<String> = MutableLiveData()
+    val onClose: MutableLiveData<Boolean> = MutableLiveData()
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
     private val productList: MutableList<ProductModel> = mutableListOf()
@@ -68,6 +76,14 @@ class CreatorViewModel(
         return null
     }
 
+    override fun getQuantity(position: Int): String? {
+        if (position < productList.size) {
+            val product = productList[position]
+            return StringHelper.getQuantity(product.quantity, product.type)
+        }
+        return null
+    }
+
     override fun getVisible(): Int = View.GONE
 
     override fun itemCount(): Int = productList.size
@@ -77,9 +93,13 @@ class CreatorViewModel(
             return
         }
         val type = quantityTypes.list[indexType.get()]
-        val productModel = ProductModel(0, name.get()!!, count.get()!!, type.shortName, false)
+        val productModel = ProductModel(0, name.get()!!, count.get()!!, type.shortName, type.id, false)
         productList.add(productModel)
         adapter.notifyItemInserted(itemCount() - 1)
+        setProductsNumber()
+
+        name.set(null)
+        count.set(null)
     }
 
     private fun validateProduct(): Boolean {
@@ -99,10 +119,18 @@ class CreatorViewModel(
         return true
     }
 
-    private fun formatItemValidateMessage(item: String) = "\n\t•$item"
+    private fun formatItemValidateMessage(item: String) = "\n\t• $item"
 
     fun onClickShoppingSave() {
-        validateShopping()
+        if (!validateShopping()) {
+            return
+        }
+        runBlocking {
+            val shoppingDto = ShoppingDto(name = title.get()!!)
+            val shoppingId = shoppingRepository.insert(shoppingDto)
+            productRepository.insertAllModel(productList, shoppingId)
+        }
+        onClose.value = true
     }
 
     private fun validateShopping(): Boolean {

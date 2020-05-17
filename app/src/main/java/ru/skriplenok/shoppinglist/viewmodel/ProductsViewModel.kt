@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
-import ru.skriplenok.shoppinglist.helpers.Convectors
+import ru.skriplenok.shoppinglist.helpers.Converters
+import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
@@ -26,7 +27,7 @@ class ProductsViewModel(
     fun init(shoppingId: Int) {
         runBlocking {
             productDtoList = productRepository.getByShoppingId(shoppingId)
-            productList = Convectors.productDtoToProductModel(productDtoList)
+            productList = Converters.productDtoToProductModel(productDtoList)
         }
     }
 
@@ -35,6 +36,14 @@ class ProductsViewModel(
     override fun getItem(position: Int): ProductModel? {
         if (position < productDtoList.size) {
             return productList[position]
+        }
+        return null
+    }
+
+    override fun getQuantity(position: Int): String? {
+        if (position < productDtoList.size) {
+            val product = productList[position]
+            return StringHelper.getQuantity(product.quantity, product.type)
         }
         return null
     }

@@ -5,6 +5,7 @@ data class ProductModel(
     val name: String,
     val quantity: String,
     val type: String,
+    val typeId: Int,
     var status: Boolean
 ){
 }

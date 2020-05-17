@@ -14,5 +14,5 @@ interface ProductDao {
     fun insert(dto: ProductDto)
 
     @Insert
-    fun insertAll(dtoList: List<ProductDto>)
+    suspend fun insertAll(dtoList: List<ProductDto>)
 }

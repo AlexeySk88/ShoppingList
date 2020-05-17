@@ -11,12 +11,11 @@ import ru.skriplenok.shoppinglist.viewmodel.factories.ShoppingViewModelFactory
 
 object InjectorViewModel {
 
-    fun provideCreatorViewModel(fragment: Fragment): CreatorViewModelFactory
-            = CreatorViewModelFactory(fragment.requireContext(), fragment)
-
-    fun provideShoppingViewModel(fragment: Fragment): ShoppingViewModelFactory {
+    fun provideCreatorViewModel(fragment: Fragment): CreatorViewModelFactory {
         val shoppingRepository = getShoppingRepository(fragment.requireContext())
-        return ShoppingViewModelFactory(shoppingRepository, fragment)
+        val productRepository = getProductRepository(fragment.requireContext())
+        return CreatorViewModelFactory(shoppingRepository, productRepository,
+                                       fragment.requireContext(), fragment)
     }
 
     private fun getShoppingRepository(context: Context): ShoppingRepository {
@@ -24,13 +23,18 @@ object InjectorViewModel {
         return ShoppingRepository.getInstance(dao)
     }
 
-    fun provideProductViewModel(fragment: Fragment): ProductViewModelFactory {
-        val productRepository = getProductRepository(fragment.requireContext())
-        return ProductViewModelFactory(productRepository, fragment)
-    }
-
     private fun getProductRepository(context: Context): ProductRepository {
         val dao = RoomAppDatabase.getDatabase(context).productDao()
         return ProductRepository.getInstance(dao)
+    }
+
+    fun provideShoppingViewModel(fragment: Fragment): ShoppingViewModelFactory {
+        val shoppingRepository = getShoppingRepository(fragment.requireContext())
+        return ShoppingViewModelFactory(shoppingRepository, fragment)
+    }
+
+    fun provideProductViewModel(fragment: Fragment): ProductViewModelFactory {
+        val productRepository = getProductRepository(fragment.requireContext())
+        return ProductViewModelFactory(productRepository, fragment)
     }
 }

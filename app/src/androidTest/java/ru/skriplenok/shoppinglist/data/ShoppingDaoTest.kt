@@ -34,9 +34,9 @@ class ShoppingDaoTest {
     private val type1 = ProductTypeDto(1, "", "")
 
     private lateinit var productDao: ProductDao
-    private val product1 = ProductDto(1, 1, 1, "a", 1F)
-    private val product2 = ProductDto(2, 1, 1, "b", 2F)
-    private val product3 = ProductDto(3, 1, 1, "c", 3F)
+    private val product1 = ProductDto(1, 1, 1, "a", "1")
+    private val product2 = ProductDto(2, 1, 1, "b", "2")
+    private val product3 = ProductDto(3, 1, 1, "c", "3")
 
     @Before
     fun createDb() = runBlocking {
@@ -71,8 +71,8 @@ class ShoppingDaoTest {
         val activeList = shoppingDao.getAllActive()
 
         assertEquals(2, activeList.size)
-        assertThat(activeList[0], equalTo(shopping1))
-        assertThat(activeList[1], equalTo(shopping2))
+        assertThat(activeList[0].shopping, equalTo(shopping1))
+        assertThat(activeList[1].shopping, equalTo(shopping2))
     }
 
     @Test
@@ -80,6 +80,14 @@ class ShoppingDaoTest {
         val archiveList = shoppingDao.getAllArchive()
 
         assertEquals(1, archiveList.size)
-        assertThat(archiveList[0], equalTo(shopping3))
+        assertThat(archiveList[0].shopping, equalTo(shopping3))
+    }
+
+    @Test
+    fun testAutoIncrement() = runBlocking {
+        val shopping4 = ShoppingDto(name = "D")
+        val id = shoppingDao.insert(shopping4)
+
+        assertNotNull(id)
     }
 }

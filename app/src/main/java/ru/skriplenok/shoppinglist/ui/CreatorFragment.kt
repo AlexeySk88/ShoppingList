@@ -56,13 +56,19 @@ class CreatorFragment: Fragment() {
             DataBindingUtil.setContentView<CreatorFragmentBinding>(requireActivity(), R.layout.creator_fragment)
 
         binding.model = viewModel
-        setupToastMessage()
+        setupObservers()
     }
 
-    private fun setupToastMessage() {
+    private fun setupObservers() {
         viewModel.toastMessage.observe(viewLifecycleOwner, Observer {
             if (it !== null) {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.onClose.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                navController.popBackStack()
             }
         })
     }
