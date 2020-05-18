@@ -23,7 +23,6 @@ class ShoppingFragment: Fragment() {
     private val viewModel by viewModels<ShoppingViewModel> {
         InjectorViewModel.provideShoppingViewModel(this)
     }
-    private var mActionMode: ActionMode? = null
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -63,10 +62,6 @@ class ShoppingFragment: Fragment() {
     }
 
     private fun setupListUpdate() {
-        viewModel.loading.set(View.VISIBLE)
-        viewModel.setModelInAdapter()
-        viewModel.loading.set(View.GONE)
-
         setupListClick()
         setupLongListClick()
     }
@@ -86,8 +81,8 @@ class ShoppingFragment: Fragment() {
     //TODO завершить ActionMode при переходе на другой фрагмент
     private fun setupLongListClick() {
         viewModel.longSelected.observe(viewLifecycleOwner, Observer {
-            if ((it !== null) and (mActionMode === null)) {
-                (activity as AppCompatActivity).startSupportActionMode(object: ActionMode.Callback {
+            if ((it !== null) and (viewModel.mActionMode === null)) {
+                viewModel.mActionMode = (activity as AppCompatActivity).startSupportActionMode(object: ActionMode.Callback {
                     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                         return false
                     }
@@ -103,7 +98,7 @@ class ShoppingFragment: Fragment() {
                     }
 
                     override fun onDestroyActionMode(mode: ActionMode?) {
-                        mActionMode = null
+                        viewModel.mActionMode = null
                     }
                 })
             }
