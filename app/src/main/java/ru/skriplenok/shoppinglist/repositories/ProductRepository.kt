@@ -1,13 +1,12 @@
 package ru.skriplenok.shoppinglist.repositories
 
-import androidx.lifecycle.LiveData
 import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.dao.ProductDao
 
 class ProductRepository private constructor(private val dao: ProductDao){
 
-    suspend fun getByShoppingId(id: Int): LiveData<MutableList<ProductModel>> {
+    suspend fun getByShoppingId(id: Int): MutableList<ProductModel> {
         val dto = dao.getByShoppingId(id)
         return Converters.productDtoToProductModel(dto)
     }

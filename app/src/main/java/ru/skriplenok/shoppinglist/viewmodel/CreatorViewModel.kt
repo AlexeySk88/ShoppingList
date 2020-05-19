@@ -43,11 +43,11 @@ class CreatorViewModel(
     val name: ObservableField<String> = ObservableField()
     val count: ObservableField<String> = ObservableField()
     val indexType: ObservableInt = ObservableInt()
+
     val toastMessage: MutableLiveData<String> = MutableLiveData()
     val onClose: MutableLiveData<Boolean> = MutableLiveData()
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
-    //TODO перевести на liveData
     private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {

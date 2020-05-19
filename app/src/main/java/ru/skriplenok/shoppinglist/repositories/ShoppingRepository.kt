@@ -11,7 +11,7 @@ import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 class ShoppingRepository private constructor(private val dao: ShoppingDao){
 
     //TODO добавить сохранение резульата выборки и его инвалидации при UID
-    suspend fun getAllActive(): LiveData<MutableList<ShoppingModel>> {
+    suspend fun getAllActive(): MutableList<ShoppingModel> {
         return Converters.shoppingDtoToShoppingModel(dao.getAllActive())
     }
 

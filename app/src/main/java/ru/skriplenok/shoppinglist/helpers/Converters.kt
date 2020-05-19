@@ -1,7 +1,5 @@
 package ru.skriplenok.shoppinglist.helpers
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
@@ -20,10 +18,10 @@ object Converters {
         return ProductModel(dto, quantityType.shortName)
     }
 
-    fun productDtoToProductModel(dtoList: List<ProductDto>): LiveData<MutableList<ProductModel>> {
-        val models = MutableLiveData<MutableList<ProductModel>>(mutableListOf())
+    fun productDtoToProductModel(dtoList: List<ProductDto>): MutableList<ProductModel> {
+        val models = mutableListOf<ProductModel>()
         for (dto in dtoList) {
-            models.value?.add(productDtoToProductModel(dto))
+            models.add(productDtoToProductModel(dto))
         }
         return models
     }
@@ -45,10 +43,10 @@ object Converters {
                              dto.productsActive)
     }
 
-    fun shoppingDtoToShoppingModel(dtoList: List<ShoppingWithCount>): LiveData<MutableList<ShoppingModel>> {
-        val modelList = MutableLiveData<MutableList<ShoppingModel>>(mutableListOf())
+    fun shoppingDtoToShoppingModel(dtoList: List<ShoppingWithCount>): MutableList<ShoppingModel> {
+        val modelList = mutableListOf<ShoppingModel>()
         for (dto in dtoList) {
-            modelList.value?.add(shoppingDtoToShoppingModel(dto))
+            modelList.add(shoppingDtoToShoppingModel(dto))
         }
         return modelList
     }

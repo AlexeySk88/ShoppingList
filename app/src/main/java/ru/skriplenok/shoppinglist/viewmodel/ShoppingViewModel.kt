@@ -18,11 +18,11 @@ class ShoppingViewModel(
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
     var mActionMode: ActionMode? = null
     val countItems: Int
-        get() = shoppingList.value?.count() ?: 0
+        get() = shoppingList.count()
     val selected: MutableLiveData<ShoppingModel> = MutableLiveData()
     val longSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
 
-    private var shoppingList: LiveData<MutableList<ShoppingModel>> = MutableLiveData()
+    private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
 
     fun init() {
         viewModelScope.launch {  }
@@ -31,14 +31,14 @@ class ShoppingViewModel(
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
         }
-        if (!shoppingList.value.isNullOrEmpty()) {
+        if (!shoppingList.isNullOrEmpty()) {
             validateShoppingList()
         }
     }
 
     private fun validateShoppingList() {
         val archiveList = mutableListOf<ShoppingModel>()
-        for (shopping in shoppingList.value!!) {
+        for (shopping in shoppingList) {
             if (shopping.productsAll == shopping.productsActive) {
                 archiveList.add(shopping)
             }
@@ -46,20 +46,20 @@ class ShoppingViewModel(
         viewModelScope.launch {
             shoppingRepository.updateAll(archiveList)
         }
-        shoppingList.value!!.removeAll(archiveList)
+        shoppingList.removeAll(archiveList)
         adapter.notifyDataSetChanged()
     }
 
     fun getItem(position: Int): ShoppingModel? {
         if (position < countItems) {
-            return shoppingList.value?.get(position)
+            return shoppingList[position]
         }
         return null
     }
 
     fun getCount(position: Int): String? {
         if (position < countItems) {
-            val shopping = shoppingList.value!![position]
+            val shopping = shoppingList[position]
             return StringHelper.getShoppingFraction(shopping.productsActive.toString(),
                                                     shopping.productsAll.toString())
         }

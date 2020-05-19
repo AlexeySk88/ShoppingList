@@ -2,7 +2,9 @@ package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
@@ -20,7 +22,7 @@ class ProductsViewModel(
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     val loading: ObservableInt = ObservableInt(View.GONE)
 
-    private var productList: LiveData<MutableList<ProductModel>> = MutableLiveData()
+    private var productList: MutableList<ProductModel> = mutableListOf()
 
     fun init(shoppingId: Int) {
         runBlocking {
@@ -32,14 +34,14 @@ class ProductsViewModel(
 
     override fun getTitle(position: Int): String? {
         if (position < itemCount()) {
-            return productList.value!![position].product.name
+            return productList[position].product.name
         }
         return null
     }
 
     override fun getSelected(position: Int): Boolean {
         if (position< itemCount()) {
-            return productList.value!![position].product.selectedDate != null
+            return productList[position].product.selectedDate != null
         }
         return false
     }
@@ -49,7 +51,7 @@ class ProductsViewModel(
             return
         }
 
-        val selectedProduct = productList.value?.get(position)!!
+        val selectedProduct = productList[position]
         setSelectedDate(selectedProduct)
         viewModelScope.launch {
             productRepository.update(selectedProduct)
@@ -66,7 +68,7 @@ class ProductsViewModel(
 
     override fun getQuantity(position: Int): String? {
         if (position < itemCount()) {
-            val product = productList.value!![position]
+            val product = productList[position]
             return StringHelper.getQuantity(product.product.quantity, product.typeShortName)
         }
         return null
@@ -74,5 +76,5 @@ class ProductsViewModel(
 
     override fun getVisible(): Int = View.VISIBLE
 
-    override fun itemCount() = productList.value?.size ?: 0
+    override fun itemCount() = productList.size
 }
