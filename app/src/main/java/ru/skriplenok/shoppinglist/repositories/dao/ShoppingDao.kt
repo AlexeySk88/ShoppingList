@@ -1,10 +1,7 @@
 package ru.skriplenok.shoppinglist.repositories.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import ru.skriplenok.shoppinglist.repositories.contracts.RoomContract
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
@@ -41,4 +38,7 @@ interface ShoppingDao {
 
     @Insert
     fun insertAll(dtoList: List<ShoppingDto>)
+
+    @Update
+    suspend fun updateAll(dtoList: List<ShoppingDto>)
 }

@@ -15,6 +15,10 @@ class ShoppingRepository private constructor(private val dao: ShoppingDao){
         return Converters.shoppingDtoToShoppingModel(dao.getAllActive())
     }
 
+    suspend fun updateAll(modelList: List<ShoppingModel>) {
+        dao.updateAll(Converters.shoppingModelToShoppingDto(modelList))
+    }
+
     suspend fun insert(dto: ShoppingDto) = dao.insert(dto).toInt()
 
     companion object {

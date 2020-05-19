@@ -31,6 +31,6 @@ data class ProductDto(
     val createdDate: Calendar = Calendar.getInstance(),
 
     @ColumnInfo(name = "selected_date")
-    val selectedDate: Calendar? = null
+    var selectedDate: Calendar? = null
 ){
 }

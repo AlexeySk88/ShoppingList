@@ -11,8 +11,11 @@ interface ProductDao {
     suspend fun getByShoppingId(id: Int): List<ProductDto>
 
     @Insert
-    fun insert(dto: ProductDto)
+    suspend fun insert(dto: ProductDto)
 
     @Insert
     suspend fun insertAll(dtoList: List<ProductDto>)
+
+    @Update
+    suspend fun update(dto: ProductDto)
 }

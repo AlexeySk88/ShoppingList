@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.dao.ProductDao
-import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 
 class ProductRepository private constructor(private val dao: ProductDao){
 
@@ -13,13 +12,16 @@ class ProductRepository private constructor(private val dao: ProductDao){
         return Converters.productDtoToProductModel(dto)
     }
 
-    suspend fun insertAll(list: List<ProductDto>) {
-        dao.insertAll(list)
+    suspend fun insert(model: ProductModel) {
+        dao.insert(Converters.productModelToProductDto(model))
     }
 
-    suspend fun insertAllModel(list: List<ProductModel>) {
-        val dtoList = Converters.productModelToProductDto(list)
-        dao.insertAll(dtoList)
+    suspend fun insertAll(list: List<ProductModel>) {
+        dao.insertAll(Converters.productModelToProductDto(list))
+    }
+
+    suspend fun update(model: ProductModel) {
+        dao.update(Converters.productModelToProductDto(model))
     }
 
     companion object {

@@ -12,6 +12,8 @@ object Converters {
 
     private val quantityTypes = QuantityTypes.getInstance()
 
+    // PRODUCT
+
     //TODO добавить обработчик ошибок
     fun productDtoToProductModel(dto: ProductDto): ProductModel {
         val quantityType = quantityTypes.map[dto.typeId] ?: error("")
@@ -26,7 +28,7 @@ object Converters {
         return models
     }
 
-    private fun productModelToProductDto(model: ProductModel) = model.product
+    fun productModelToProductDto(model: ProductModel) = model.product
 
     fun productModelToProductDto(modelList: List<ProductModel>): List<ProductDto> {
         val dtoList = mutableListOf<ProductDto>()
@@ -35,6 +37,8 @@ object Converters {
         }
         return dtoList
     }
+
+    // SHOPPING
 
     private fun shoppingDtoToShoppingModel(dto: ShoppingWithCount): ShoppingModel {
         return ShoppingModel(dto.shopping, dto.productsAll,
@@ -47,5 +51,15 @@ object Converters {
             modelList.value?.add(shoppingDtoToShoppingModel(dto))
         }
         return modelList
+    }
+
+    private fun shoppingModelToShoppingDto(model: ShoppingModel) = model.shopping
+
+    fun shoppingModelToShoppingDto(modelList: List<ShoppingModel>): List<ShoppingDto> {
+        val dtoList = mutableListOf<ShoppingDto>()
+        for (model in modelList) {
+            dtoList.add(shoppingModelToShoppingDto(model))
+        }
+        return dtoList
     }
 }

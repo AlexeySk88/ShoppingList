@@ -13,12 +13,12 @@ data class ShoppingDto(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    val name: String,
+    var name: String,
 
     @ColumnInfo(name = "created_date")
     val createdDate: Calendar = Calendar.getInstance(),
 
     @ColumnInfo(name = "closed_date")
-    val closedDate: Calendar? = null
+    var closedDate: Calendar? = null
 ) {
 }

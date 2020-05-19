@@ -31,6 +31,23 @@ class ShoppingViewModel(
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
         }
+        if (!shoppingList.value.isNullOrEmpty()) {
+            validateShoppingList()
+        }
+    }
+
+    private fun validateShoppingList() {
+        val archiveList = mutableListOf<ShoppingModel>()
+        for (shopping in shoppingList.value!!) {
+            if (shopping.productsAll == shopping.productsActive) {
+                archiveList.add(shopping)
+            }
+        }
+        viewModelScope.launch {
+            shoppingRepository.updateAll(archiveList)
+        }
+        shoppingList.value!!.removeAll(archiveList)
+        adapter.notifyDataSetChanged()
     }
 
     fun getItem(position: Int): ShoppingModel? {
@@ -42,9 +59,9 @@ class ShoppingViewModel(
 
     fun getCount(position: Int): String? {
         if (position < countItems) {
-            val shopping = shoppingList.value?.get(position)
-            return StringHelper.getShoppingFraction(shopping?.productsActive.toString(),
-                                                    shopping?.productsAll.toString())
+            val shopping = shoppingList.value!![position]
+            return StringHelper.getShoppingFraction(shopping.productsActive.toString(),
+                                                    shopping.productsAll.toString())
         }
         return null
     }

@@ -86,6 +86,9 @@ class CreatorViewModel(
         return false
     }
 
+    // Метод без реализации т.к. checkbox на который повесили событие скрыта
+    override fun onSelected(position: Int) { }
+
     override fun getQuantity(position: Int): String? {
         if (position < productList.size) {
             val product = productList[position]
@@ -140,8 +143,8 @@ class CreatorViewModel(
         runBlocking {
             val shoppingDto = ShoppingDto(name = title.get()!!)
             val shoppingId = shoppingRepository.insert(shoppingDto)
-            val productListForDb = setShoppingId(shoppingId)
-            productRepository.insertAllModel(productListForDb)
+            setShoppingId(shoppingId)
+            productRepository.insertAll(productList)
         }
         onClose.value = true
     }
@@ -163,11 +166,9 @@ class CreatorViewModel(
         return true
     }
 
-    private fun setShoppingId(shoppingId: Int): List<ProductModel> {
-        val newList = productList
-        for (item in newList) {
+    private fun setShoppingId(shoppingId: Int) {
+        for (item in productList) {
             item.product.shoppingId = shoppingId
         }
-        return newList
     }
 }

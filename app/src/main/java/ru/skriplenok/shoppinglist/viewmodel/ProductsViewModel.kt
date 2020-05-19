@@ -2,16 +2,15 @@ package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
+import java.util.*
 
 class ProductsViewModel(
     private val productRepository: ProductRepository,
@@ -43,6 +42,26 @@ class ProductsViewModel(
             return productList.value!![position].product.selectedDate != null
         }
         return false
+    }
+
+    override fun onSelected(position: Int) {
+        if (position >= itemCount()) {
+            return
+        }
+
+        val selectedProduct = productList.value?.get(position)!!
+        setSelectedDate(selectedProduct)
+        viewModelScope.launch {
+            productRepository.update(selectedProduct)
+        }
+    }
+
+    private fun setSelectedDate(model: ProductModel) {
+        if (model.product.selectedDate == null) {
+            model.product.selectedDate = Calendar.getInstance()
+        } else {
+            model.product.selectedDate = null
+        }
     }
 
     override fun getQuantity(position: Int): String? {
