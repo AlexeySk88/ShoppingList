@@ -12,11 +12,13 @@ import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.helpers.Constants
+import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.helpers.QuantityTypes
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
+import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
 
 class CreatorViewModel(
@@ -45,6 +47,7 @@ class CreatorViewModel(
     val onClose: MutableLiveData<Boolean> = MutableLiveData()
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
+    //TODO перевести на liveData
     private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {
@@ -69,17 +72,24 @@ class CreatorViewModel(
         spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
     }
 
-    override fun getItem(position: Int): ProductModel? {
-        if(position < productList.size) {
-            return productList[position]
+    override fun getTitle(position: Int): String? {
+        if (position < productList.size) {
+            return productList[position].product.name
         }
         return null
+    }
+
+    override fun getSelected(position: Int): Boolean {
+        if (position < productList.size) {
+            return productList[position].product.selectedDate != null
+        }
+        return false
     }
 
     override fun getQuantity(position: Int): String? {
         if (position < productList.size) {
             val product = productList[position]
-            return StringHelper.getQuantity(product.quantity, product.type)
+            return StringHelper.getQuantity(product.product.quantity, product.typeShortName)
         }
         return null
     }
@@ -93,8 +103,10 @@ class CreatorViewModel(
             return
         }
         val type = quantityTypes.list[indexType.get()]
-        val productModel = ProductModel(0, name.get()!!, count.get()!!, type.shortName, type.id, false)
-        productList.add(productModel)
+        // Так как мы не знаем shoppingId, то сейчас всем товарам в списке задаём 0,
+        // поэтому перед записью в БД обязательно прогоняем весь список через метод setShoppingID()
+        val productDto = ProductDto(0, 0, type.id, name.get()!!, count.get()!!)
+        productList.add(Converters.productDtoToProductModel(productDto))
         adapter.notifyItemInserted(itemCount() - 1)
         setProductsNumber()
 
@@ -128,7 +140,8 @@ class CreatorViewModel(
         runBlocking {
             val shoppingDto = ShoppingDto(name = title.get()!!)
             val shoppingId = shoppingRepository.insert(shoppingDto)
-            productRepository.insertAllModel(productList, shoppingId)
+            val productListForDb = setShoppingId(shoppingId)
+            productRepository.insertAllModel(productListForDb)
         }
         onClose.value = true
     }
@@ -148,5 +161,13 @@ class CreatorViewModel(
             return false
         }
         return true
+    }
+
+    private fun setShoppingId(shoppingId: Int): List<ProductModel> {
+        val newList = productList
+        for (item in newList) {
+            item.product.shoppingId = shoppingId
+        }
+        return newList
     }
 }

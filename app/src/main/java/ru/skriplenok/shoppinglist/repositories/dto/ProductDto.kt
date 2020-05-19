@@ -18,7 +18,7 @@ data class ProductDto(
     val id: Int = 0,
 
     @ColumnInfo(name = "shopping_id")
-    val shoppingId: Int,
+    var shoppingId: Int,
 
     @ColumnInfo(name = "type_id")
     val typeId: Int,

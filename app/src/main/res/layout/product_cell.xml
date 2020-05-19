@@ -28,7 +28,7 @@
 
             <CheckBox
                 android:id="@+id/productListCheckBox"
-                android:checked="@{mod.getItem(pos).status}"
+                android:checked="@{mod.getSelected(pos)}"
                 android:visibility="@{mod.getVisible()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Вода"
-                    android:text="@{mod.getItem(pos).name}"
+                    android:text="@{mod.getTitle(pos)}"
                     android:layout_marginStart="@dimen/product_title_left_margin"
                     android:textSize="@dimen/products_title_text"
                     app:layout_constraintTop_toTopOf="parent"

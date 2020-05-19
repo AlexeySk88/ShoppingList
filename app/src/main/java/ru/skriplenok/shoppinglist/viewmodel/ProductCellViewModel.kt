@@ -4,7 +4,8 @@ import ru.skriplenok.shoppinglist.models.ProductModel
 
 interface ProductCellViewModel {
 
-    fun getItem(position: Int): ProductModel?
+    fun getTitle(position: Int): String?
+    fun getSelected(position: Int): Boolean
     fun getQuantity(position: Int): String?
     fun getVisible(): Int
     fun itemCount(): Int

@@ -2,16 +2,16 @@ package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
-import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
-import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 
 class ProductsViewModel(
     private val productRepository: ProductRepository,
@@ -21,34 +21,39 @@ class ProductsViewModel(
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     val loading: ObservableInt = ObservableInt(View.GONE)
 
-    private var productDtoList: List<ProductDto> = mutableListOf()
-    private var productList: List<ProductModel> = mutableListOf()
+    private var productList: LiveData<MutableList<ProductModel>> = MutableLiveData()
 
     fun init(shoppingId: Int) {
         runBlocking {
-            productDtoList = productRepository.getByShoppingId(shoppingId)
-            productList = Converters.productDtoToProductModel(productDtoList)
+            productList = productRepository.getByShoppingId(shoppingId)
         }
     }
 
     fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
-    override fun getItem(position: Int): ProductModel? {
-        if (position < productDtoList.size) {
-            return productList[position]
+    override fun getTitle(position: Int): String? {
+        if (position < itemCount()) {
+            return productList.value!![position].product.name
         }
         return null
     }
 
+    override fun getSelected(position: Int): Boolean {
+        if (position< itemCount()) {
+            return productList.value!![position].product.selectedDate != null
+        }
+        return false
+    }
+
     override fun getQuantity(position: Int): String? {
-        if (position < productDtoList.size) {
-            val product = productList[position]
-            return StringHelper.getQuantity(product.quantity, product.type)
+        if (position < itemCount()) {
+            val product = productList.value!![position]
+            return StringHelper.getQuantity(product.product.quantity, product.typeShortName)
         }
         return null
     }
 
     override fun getVisible(): Int = View.VISIBLE
 
-    override fun itemCount(): Int =  productDtoList.size
+    override fun itemCount() = productList.value?.size ?: 0
 }

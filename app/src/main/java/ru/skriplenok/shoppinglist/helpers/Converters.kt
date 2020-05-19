@@ -13,36 +13,32 @@ object Converters {
     private val quantityTypes = QuantityTypes.getInstance()
 
     //TODO добавить обработчик ошибок
-    private fun productDtoToProductModel(dto: ProductDto): ProductModel {
+    fun productDtoToProductModel(dto: ProductDto): ProductModel {
         val quantityType = quantityTypes.map[dto.typeId] ?: error("")
-        return ProductModel(dto.id, dto.name, dto.quantity, quantityType.shortName,
-                            quantityType.id, dto.selectedDate == null)
+        return ProductModel(dto, quantityType.shortName)
     }
 
-    fun productDtoToProductModel(dtoList: List<ProductDto>): List<ProductModel> {
-        val models = mutableListOf<ProductModel>()
+    fun productDtoToProductModel(dtoList: List<ProductDto>): LiveData<MutableList<ProductModel>> {
+        val models = MutableLiveData<MutableList<ProductModel>>(mutableListOf())
         for (dto in dtoList) {
-            models.add(productDtoToProductModel(dto))
+            models.value?.add(productDtoToProductModel(dto))
         }
         return models
     }
 
-    private fun productModelToProductDto(model: ProductModel, shoppingId: Int): ProductDto {
-        return ProductDto(shoppingId = shoppingId,typeId = model.typeId,name = model.name,
-                          quantity = model.quantity)
-    }
+    private fun productModelToProductDto(model: ProductModel) = model.product
 
-    fun productModelToProductDto(modelList: List<ProductModel>, shoppingId: Int): List<ProductDto> {
+    fun productModelToProductDto(modelList: List<ProductModel>): List<ProductDto> {
         val dtoList = mutableListOf<ProductDto>()
         for (model in modelList) {
-            dtoList.add(productModelToProductDto(model, shoppingId))
+            dtoList.add(productModelToProductDto(model))
         }
         return dtoList
     }
 
     private fun shoppingDtoToShoppingModel(dto: ShoppingWithCount): ShoppingModel {
         return ShoppingModel(dto.shopping, dto.productsAll,
-                             dto.productsActive, false)
+                             dto.productsActive)
     }
 
     fun shoppingDtoToShoppingModel(dtoList: List<ShoppingWithCount>): LiveData<MutableList<ShoppingModel>> {
