@@ -1,7 +1,12 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
+import android.view.View
 import androidx.appcompat.view.ActionMode
-import androidx.lifecycle.*
+import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
@@ -17,11 +22,22 @@ class ShoppingViewModel(
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
     var mActionMode: ActionMode? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                showSideCheckBox.set(View.VISIBLE)
+            } else {
+                showSideCheckBox.set(View.GONE)
+            }
+        }
     val countItems: Int
         get() = shoppingList.count()
     val selected: MutableLiveData<ShoppingModel> = MutableLiveData()
     val longSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
+    var showSideCheckBox: ObservableInt = ObservableInt(View.GONE)
 
+    // id выбранных списков
+    private val checkedList: MutableLiveData<MutableSet<Int>> = MutableLiveData(mutableSetOf())
     private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
 
     fun init() {
@@ -37,6 +53,7 @@ class ShoppingViewModel(
     }
 
     private fun validateShoppingList() {
+        //TODO собирать на модели, а id
         val archiveList = mutableListOf<ShoppingModel>()
         for (shopping in shoppingList) {
             if (shopping.productsAll == shopping.productsActive) {
@@ -67,12 +84,18 @@ class ShoppingViewModel(
     }
 
     fun onClick(position: Int) {
-        mActionMode?.finish()
-        selected.value = getItem(position)
+        // пока не завершим ActionMode блокируем выбор списка товаров
+        if (mActionMode != null) {
+            selected.value = getItem(position)
+        }
     }
 
     fun onLongClick(position: Int): Boolean {
         longSelected.value = getItem(position)
         return true
+    }
+
+    fun onChecked(position: Int) {
+
     }
 }

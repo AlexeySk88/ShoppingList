@@ -2,11 +2,13 @@ package ru.skriplenok.shoppinglist.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import ru.skriplenok.shoppinglist.BR
+import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 
 class ShoppingAdapter(
@@ -41,6 +43,10 @@ class ShoppingAdapter(
                 setOnLongClickListener {
                     viewModel.onLongClick(position)
                 }
+            }
+
+            binding.root.findViewById<CheckBox>(R.id.sideCheckbox).setOnClickListener {
+                viewModel.onChecked(position)
             }
         }
     }

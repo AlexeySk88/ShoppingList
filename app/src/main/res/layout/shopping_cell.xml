@@ -9,61 +9,91 @@
             type="ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/shoppingListElement"
-        android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="@dimen/card_view_elevation"
-        android:layout_margin="@dimen/card_view_margin"
-        app:cardCornerRadius="@dimen/card_view_coroner_radius"
-        android:paddingVertical="@dimen/card_view_padding_vertical">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <FrameLayout
+            android:id="@+id/sideCheckboxLayout"
+            android:visibility="@{model.showSideCheckBox}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/shopping_checkbox_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/shoppingListElement"
+            app:layout_constraintBottom_toBottomOf="@+id/shoppingListElement">
 
-        <!--    TODO реализвать чтобы ничего не налезало на кнопку-->
-
-            <TextView
-                android:id="@+id/title"
+            <CheckBox
+                android:id="@+id/sideCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Покупки на ужин"
-                android:text="@{model.getItem(position).shopping.name}"
-                android:textSize="@dimen/shopping_title_text"
-                android:textColor="@color/normalText"
-                android:textStyle="bold"
-                android:layout_marginStart="@dimen/shopping_horizontal_margin"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/counter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                tools:text="10/25"
-                android:text="@{model.getCount(position)}"
-                android:textSize="@dimen/shopping_count_text"
-                android:textColor="@color/normalText"
-                android:layout_marginStart="@dimen/shopping_horizontal_margin"
+                android:scaleX="@dimen/checkbox_scale"
+                android:scaleY="@dimen/checkbox_scale"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/separator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
+        </FrameLayout>
 
-            <View
-                android:id="@+id/separator"
-                android:layout_width="@dimen/shopping_separator_width"
-                android:layout_height="0.5dp"
-                android:background="@color/normalText"
-                android:layout_marginTop="@dimen/shopping_separator_margin_top"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/shoppingListElement"
+            android:descendantFocusability="blocksDescendants"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardElevation="@dimen/card_view_elevation"
+            app:cardCornerRadius="@dimen/card_view_coroner_radius"
+            android:layout_margin="@dimen/card_view_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sideCheckboxLayout"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <!--    TODO реализвать чтобы ничего не налезало на кнопку-->
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Покупки на ужин"
+                    android:text="@{model.getItem(position).shopping.name}"
+                    android:textSize="@dimen/shopping_title_text"
+                    android:textColor="@color/normalText"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/shopping_horizontal_margin"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    tools:text="10/25"
+                    android:text="@{model.getCount(position)}"
+                    android:textSize="@dimen/shopping_count_text"
+                    android:textColor="@color/normalText"
+                    android:layout_marginStart="@dimen/shopping_horizontal_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/separator"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <View
+                    android:id="@+id/separator"
+                    android:layout_width="@dimen/shopping_separator_width"
+                    android:layout_height="0.5dp"
+                    android:background="@color/normalText"
+                    android:layout_marginTop="@dimen/shopping_separator_margin_top"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
