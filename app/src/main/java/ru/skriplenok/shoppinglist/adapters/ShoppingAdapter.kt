@@ -31,21 +31,25 @@ class ShoppingAdapter(
 
     class ViewHolder(private val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
 
+        private val checkBox = itemView.findViewById<CheckBox>(R.id.sideCheckbox)
+
         fun bind(viewModel: ShoppingViewModel, position: Int) {
             binding.setVariable(BR.position, position)
             binding.setVariable(BR.model, viewModel)
             binding.executePendingBindings()
+
 
             itemView.apply {
                 setOnClickListener {
                     viewModel.onClick(position)
                 }
                 setOnLongClickListener {
+                    checkBox.isChecked = true
                     viewModel.onLongClick(position)
                 }
             }
 
-            binding.root.findViewById<CheckBox>(R.id.sideCheckbox).setOnClickListener {
+            checkBox.setOnClickListener {
                 viewModel.onChecked(position)
             }
         }

@@ -37,7 +37,7 @@ class ShoppingFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         setHasOptionsMenu(true) // для onCreateOptionsMenu
-        activity?.title = "Список покупок"
+        activity?.title = Constants.SHOPPING_DEFAULT_TITLE.value
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -67,7 +67,7 @@ class ShoppingFragment: Fragment() {
     }
 
     private fun setupListClick() {
-        viewModel.selected.observe(viewLifecycleOwner, Observer {
+        viewModel.clickSelected.observe(viewLifecycleOwner, Observer {
             if (it !== null) {
                 val bundle = bundleOf(
                     Constants.SHOPPING_ID.value to it.shopping.id,
@@ -78,30 +78,38 @@ class ShoppingFragment: Fragment() {
         })
     }
 
-    //TODO завершить ActionMode при переходе на другой фрагмент
     private fun setupLongListClick() {
-        viewModel.longSelected.observe(viewLifecycleOwner, Observer {
-            if ((it !== null) and (viewModel.mActionMode === null)) {
-                viewModel.mActionMode = (activity as AppCompatActivity).startSupportActionMode(object: ActionMode.Callback {
-                    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-                        return false
-                    }
+        viewModel.longClickSelectedCount.observe(viewLifecycleOwner, Observer {
+            if (it !== null) {
+                if (viewModel.mActionMode === null) {
+                    viewModel.mActionMode = (activity as AppCompatActivity).startSupportActionMode(object: ActionMode.Callback {
+                        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                            return false
+                        }
 
-                    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                        val inflater = mode?.menuInflater
-                        inflater?.inflate(R.menu.shopping_menu_long_click, menu)
-                        return true
-                    }
+                        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                            val inflater = mode?.menuInflater
+                            inflater?.inflate(R.menu.shopping_menu_long_click, menu)
+                            return true
+                        }
 
-                    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                        return false
-                    }
+                        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                            return false
+                        }
 
-                    override fun onDestroyActionMode(mode: ActionMode?) {
-                        viewModel.mActionMode = null
-                    }
-                })
+                        override fun onDestroyActionMode(mode: ActionMode?) {
+                            viewModel.mActionMode = null
+                        }
+                    })
+                }
+                if (it == 0) {
+                    viewModel.mActionMode?.finish()
+                }
+                if (viewModel.mActionMode !== null) {
+                    viewModel.mActionMode?.title = Constants.SHOPPING_ACTIVE_MODE_TITLE.value + it.toString()
+                }
             }
         })
     }
+
 }

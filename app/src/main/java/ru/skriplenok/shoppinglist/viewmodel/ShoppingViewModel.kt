@@ -1,5 +1,6 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
+import android.view.Menu
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.databinding.ObservableInt
@@ -27,23 +28,26 @@ class ShoppingViewModel(
             if (value != null) {
                 showSideCheckBox.set(View.VISIBLE)
             } else {
+                // TODO очищать всё выбранные checkbox'ы при завершении ActionMode
+                selectedIds.clear()
                 showSideCheckBox.set(View.GONE)
             }
         }
+    val clickSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
+    val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
+
+    var showSideCheckBox: ObservableInt = ObservableInt(View.GONE)
     val countItems: Int
         get() = shoppingList.count()
-    val selected: MutableLiveData<ShoppingModel> = MutableLiveData()
-    val longSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
-    var showSideCheckBox: ObservableInt = ObservableInt(View.GONE)
 
     // id выбранных списков
-    private val checkedList: MutableLiveData<MutableSet<Int>> = MutableLiveData(mutableSetOf())
+    private val selectedIds: MutableSet<Int> = mutableSetOf()
     private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
 
     fun init() {
-        viewModelScope.launch {  }
-        selected.value = null
-        longSelected.value = null
+        clickSelected.value = null
+        longClickSelectedCount.value = null
+        selectedIds.clear()
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
         }
@@ -55,16 +59,18 @@ class ShoppingViewModel(
     private fun validateShoppingList() {
         //TODO собирать на модели, а id
         val archiveList = mutableListOf<ShoppingModel>()
+        val newShoppingList = mutableListOf<ShoppingModel>()
         for (shopping in shoppingList) {
             if (shopping.productsAll == shopping.productsActive) {
                 archiveList.add(shopping)
+                continue
             }
+            newShoppingList.add(shopping)
         }
+        shoppingList = newShoppingList
         viewModelScope.launch {
             shoppingRepository.updateAll(archiveList)
         }
-        shoppingList.removeAll(archiveList)
-        adapter.notifyDataSetChanged()
     }
 
     fun getItem(position: Int): ShoppingModel? {
@@ -85,17 +91,40 @@ class ShoppingViewModel(
 
     fun onClick(position: Int) {
         // пока не завершим ActionMode блокируем выбор списка товаров
-        if (mActionMode != null) {
-            selected.value = getItem(position)
+        if (mActionMode === null) {
+            clickSelected.value = getItem(position)
         }
     }
 
     fun onLongClick(position: Int): Boolean {
-        longSelected.value = getItem(position)
+        onChecked(position)
         return true
     }
 
     fun onChecked(position: Int) {
+        if (shoppingList.size <= position) {
+            return
+        }
+        val shoppingId = getItem(position)!!.shopping.id
+        if (selectedIds.contains(shoppingId)) {
+            selectedIds.remove(shoppingId)
+        } else {
+            selectedIds.add(shoppingId)
+        }
+        longClickSelectedCount.value = selectedIds.size
+        setMenuItemVisible()
+    }
 
+    private fun setMenuItemVisible() {
+        val menu = mActionMode?.menu
+        val edit = menu?.findItem(R.id.toolbarEdit)
+        val share = menu?.findItem(R.id.toolbarShare)
+
+        when(selectedIds.size) {
+            1 -> { edit?.isVisible = true
+                share?.isVisible = true }
+            2 -> { edit?.isVisible = false
+                share?.isVisible = false }
+        }
     }
 }
