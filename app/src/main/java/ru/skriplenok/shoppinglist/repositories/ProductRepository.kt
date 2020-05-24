@@ -3,8 +3,9 @@ package ru.skriplenok.shoppinglist.repositories
 import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.dao.ProductDao
+import javax.inject.Inject
 
-class ProductRepository private constructor(private val dao: ProductDao){
+class ProductRepository @Inject constructor(private val dao: ProductDao){
 
     suspend fun getByShoppingId(id: Int): MutableList<ProductModel> {
         val dto = dao.getByShoppingId(id)

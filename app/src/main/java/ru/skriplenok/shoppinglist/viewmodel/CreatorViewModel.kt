@@ -20,12 +20,11 @@ import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
+import javax.inject.Inject
 
-class CreatorViewModel(
+class CreatorViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
-    private val productRepository: ProductRepository,
-    context: Context,
-    handle: SavedStateHandle
+    private val productRepository: ProductRepository
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
@@ -51,7 +50,7 @@ class CreatorViewModel(
     private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {
-        setSpinnerAdapter(context)
+//        setSpinnerAdapter(context)
         setProductsNumber()
     }
 
@@ -63,14 +62,14 @@ class CreatorViewModel(
         productsNumber.set("Добавьте в список хотя бы один товар")
     }
 
-    private fun setSpinnerAdapter(context: Context) {
-        val spinnerTypes: MutableList<String> = mutableListOf()
-        for(quantityType in quantityTypes.list) {
-            spinnerTypes.add(quantityType.fullName)
-        }
-        spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
-        spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
-    }
+//    private fun setSpinnerAdapter(context: Context) {
+//        val spinnerTypes: MutableList<String> = mutableListOf()
+//        for(quantityType in quantityTypes.list) {
+//            spinnerTypes.add(quantityType.fullName)
+//        }
+//        spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
+//        spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
+//    }
 
     override fun getTitle(position: Int): String? {
         if (position < productList.size) {

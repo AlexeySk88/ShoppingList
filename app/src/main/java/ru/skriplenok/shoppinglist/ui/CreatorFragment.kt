@@ -5,27 +5,27 @@ import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.CreatorFragmentBinding
 import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
-import ru.skriplenok.shoppinglist.viewmodel.InjectorViewModel
+import javax.inject.Inject
 
 class CreatorFragment: Fragment() {
 
+    @Inject
+    lateinit var viewModel: CreatorViewModel
     private lateinit var navController: NavController;
-    private val viewModel by viewModels<CreatorViewModel> {
-        InjectorViewModel.provideCreatorViewModel(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        App.appComponent.inject(this)
         setBinding(savedInstanceState)
         return inflater.inflate(R.layout.creator_fragment, container, false)
     }

@@ -1,14 +1,12 @@
 package ru.skriplenok.shoppinglist.repositories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.dao.ShoppingDao
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
-import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
+import javax.inject.Inject
 
-class ShoppingRepository private constructor(private val dao: ShoppingDao){
+class ShoppingRepository @Inject constructor(private val dao: ShoppingDao){
 
     //TODO добавить сохранение резульата выборки и его инвалидации при UID
     suspend fun getAllActive(): MutableList<ShoppingModel> {

@@ -13,10 +13,10 @@ import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import java.util.*
+import javax.inject.Inject
 
-class ProductsViewModel(
-    private val productRepository: ProductRepository,
-    handle: SavedStateHandle
+class ProductsViewModel @Inject constructor(
+    private val productRepository: ProductRepository
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
