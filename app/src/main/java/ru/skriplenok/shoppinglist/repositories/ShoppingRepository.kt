@@ -18,17 +18,4 @@ class ShoppingRepository @Inject constructor(private val dao: ShoppingDao){
     }
 
     suspend fun insert(dto: ShoppingDto) = dao.insert(dto).toInt()
-
-    companion object {
-
-        @Volatile
-        private var instance: ShoppingRepository? = null
-
-        fun getInstance(dao: ShoppingDao): ShoppingRepository {
-            return instance
-                ?: synchronized(this) {
-                    instance ?: ShoppingRepository(dao).also { instance = it }
-                }
-        }
-    }
 }

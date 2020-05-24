@@ -23,17 +23,4 @@ class ProductRepository @Inject constructor(private val dao: ProductDao){
     suspend fun update(model: ProductModel) {
         dao.update(Converters.productModelToProductDto(model))
     }
-
-    companion object {
-
-        @Volatile
-        private var instance: ProductRepository? = null
-
-        fun getInstance(dao: ProductDao): ProductRepository {
-            return instance
-                ?: synchronized(this) {
-                    instance ?: ProductRepository(dao).also { instance = it }
-                }
-        }
-    }
 }

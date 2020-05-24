@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
@@ -50,7 +49,6 @@ class CreatorViewModel @Inject constructor(
     private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {
-//        setSpinnerAdapter(context)
         setProductsNumber()
     }
 
@@ -62,14 +60,14 @@ class CreatorViewModel @Inject constructor(
         productsNumber.set("Добавьте в список хотя бы один товар")
     }
 
-//    private fun setSpinnerAdapter(context: Context) {
-//        val spinnerTypes: MutableList<String> = mutableListOf()
-//        for(quantityType in quantityTypes.list) {
-//            spinnerTypes.add(quantityType.fullName)
-//        }
-//        spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
-//        spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
-//    }
+    fun setSpinnerAdapter(context: Context) {
+        val spinnerTypes: MutableList<String> = mutableListOf()
+        for(quantityType in quantityTypes.list) {
+            spinnerTypes.add(quantityType.fullName)
+        }
+        spinnerAdapter = ArrayAdapter(context, R.layout.spinner_item, spinnerTypes)
+        spinnerAdapter?.setDropDownViewResource(R.layout.spinner_item)
+    }
 
     override fun getTitle(position: Int): String? {
         if (position < productList.size) {

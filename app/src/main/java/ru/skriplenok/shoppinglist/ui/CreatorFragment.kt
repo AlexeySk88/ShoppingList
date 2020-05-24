@@ -55,6 +55,7 @@ class CreatorFragment: Fragment() {
         val binding =
             DataBindingUtil.setContentView<CreatorFragmentBinding>(requireActivity(), R.layout.creator_fragment)
 
+        viewModel.setSpinnerAdapter(requireContext())
         binding.model = viewModel
         setupObservers()
     }

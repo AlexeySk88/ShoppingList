@@ -32,41 +32,12 @@ abstract class RoomAppDatabase: RoomDatabase() {
 
     companion object {
 
-        @Volatile
-        private var instance: RoomAppDatabase? = null
-
-        fun getDatabase(context: Context): RoomAppDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
-            }
-        }
-
-        private fun buildDatabase(context: Context): RoomAppDatabase =
-            Room.databaseBuilder(context, RoomAppDatabase::class.java, RoomContract.DATABASE_NAME)
-                .addCallback(object: Callback() {
-                    override fun onCreate(db: SupportSQLiteDatabase) {
-                        super.onCreate(db)
-                        Executors.newSingleThreadScheduledExecutor()
-                            .execute {
-                                getDatabase(context).apply {
-                                    shoppingDao().insertAll(shoppingList)
-                                    productTypeDao().insertAll(typeList)
-
-                                    runBlocking {
-                                        productDao().insertAll(productList)
-                                    }
-                                }
-                            }
-                    }
-                })
-                .build()
-
-        private val shoppingList = listOf(
+        val shoppingList = listOf(
             ShoppingDto(1, "Продукты на неделю"),
             ShoppingDto(2, "Бытовая химия")
         )
 
-        private val productList = listOf(
+        val productList = listOf(
             ProductDto(1, 1, 5,"Горошек", "1"),
             ProductDto(2, 1, 5,"Докторская колбаса", "1"),
             ProductDto(3, 1, 5,"Огурец конс.", "1"),
@@ -77,7 +48,7 @@ abstract class RoomAppDatabase: RoomDatabase() {
             ProductDto(7, 2, 5, "Сгущенка", "1")
         )
 
-        private val typeList = listOf(
+        val typeList = listOf(
             ProductTypeDto(1, "грамм", "гр."),
             ProductTypeDto(2, "килограм", "кг."),
             ProductTypeDto(3, "миллилитр", "мл."),
