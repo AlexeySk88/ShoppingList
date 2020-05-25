@@ -28,6 +28,7 @@ class CreatorViewModel @Inject constructor(
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     var spinnerAdapter: ArrayAdapter<String>? = null
+
     val title: ObservableField<String> = ObservableField()
     val productsNumber: ObservableField<String> = ObservableField()
         get() {

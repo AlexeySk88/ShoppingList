@@ -49,8 +49,11 @@ class ShoppingAdapter(
                 }
             }
 
-            checkBox.setOnClickListener {
-                viewModel.onChecked(position)
+            checkBox.apply {
+                isChecked = false
+                setOnClickListener {
+                    viewModel.onChecked(position)
+                }
             }
         }
     }

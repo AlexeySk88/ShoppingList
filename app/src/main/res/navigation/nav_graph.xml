@@ -8,7 +8,8 @@
     <fragment
         android:id="@+id/shoppingFragment"
         android:name="ru.skriplenok.shoppinglist.ui.ShoppingFragment"
-        android:label="ShoppingFragment">
+        android:label="ShoppingFragment"
+        tools:layout="@layout/shopping_fragment">
         <action
             android:id="@+id/action_shoppingListFragment_to_newListFragments"
             app:destination="@id/productsFragment" />
@@ -20,7 +21,8 @@
     <fragment
         android:id="@+id/productsFragment"
         android:name="ru.skriplenok.shoppinglist.ui.ProductsFragment"
-        android:label="ProductsFragment">
+        android:label="ProductsFragment"
+        tools:layout="@layout/products_fragment">
         <argument
             android:name="shopping_id"
             app:argType="integer" />

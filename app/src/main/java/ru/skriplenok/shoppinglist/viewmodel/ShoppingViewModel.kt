@@ -1,7 +1,6 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
-import androidx.appcompat.view.ActionMode
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
+import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
 import javax.inject.Inject
 
 class ShoppingViewModel @Inject constructor(
@@ -20,17 +20,6 @@ class ShoppingViewModel @Inject constructor(
 ): ViewModel() {
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
-    var mActionMode: ActionMode? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                showSideCheckBox.set(View.VISIBLE)
-            } else {
-                // TODO очищать всё выбранные checkbox'ы при завершении ActionMode
-                selectedIds.clear()
-                showSideCheckBox.set(View.GONE)
-            }
-        }
     val clickSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
     val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
 
@@ -89,7 +78,7 @@ class ShoppingViewModel @Inject constructor(
 
     fun onClick(position: Int) {
         // пока не завершим ActionMode блокируем выбор списка товаров
-        if (mActionMode === null) {
+        if (longClickSelectedCount.value === null) {
             clickSelected.value = getItem(position)
         }
     }
@@ -100,29 +89,44 @@ class ShoppingViewModel @Inject constructor(
     }
 
     fun onChecked(position: Int) {
-        if (shoppingList.size <= position) {
+        setShowSideCheckBox(View.VISIBLE)
+        setSelectedIds(position)
+        longClickSelectedCount.value = selectedIds.size
+        if (selectedIds.size == 0) {
+            setShowSideCheckBox(View.GONE)
+        }
+    }
+
+    private fun setShowSideCheckBox(view: Int) {
+        if (showSideCheckBox.get() != view) {
+            showSideCheckBox.set(view)
+        }
+    }
+
+    private fun setSelectedIds(position: Int) {
+        val shoppingModel = getItem(position)
+        if(shoppingModel === null) {
             return
         }
-        val shoppingId = getItem(position)!!.shopping.id
+
+        val shoppingId = shoppingModel.shopping.id
         if (selectedIds.contains(shoppingId)) {
             selectedIds.remove(shoppingId)
         } else {
             selectedIds.add(shoppingId)
         }
-        longClickSelectedCount.value = selectedIds.size
-        setMenuItemVisible()
     }
 
-    private fun setMenuItemVisible() {
-        val menu = mActionMode?.menu
-        val edit = menu?.findItem(R.id.toolbarEdit)
-        val share = menu?.findItem(R.id.toolbarShare)
-
-        when(selectedIds.size) {
-            1 -> { edit?.isVisible = true
-                share?.isVisible = true }
-            2 -> { edit?.isVisible = false
-                share?.isVisible = false }
+    fun setMenuItemClickListener(itemMenu: MutableLiveData<ItemMenu>) {
+        itemMenu.observeForever {
+            if (itemMenu.value === null) {
+                return@observeForever
+            }
+            if (itemMenu.value === ItemMenu.ARROW) {
+                selectedIds.clear()
+                setShowSideCheckBox(View.GONE)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 }
