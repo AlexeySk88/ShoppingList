@@ -16,12 +16,12 @@ import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
 import javax.inject.Inject
 
 class ShoppingViewModel @Inject constructor(
-    private val shoppingRepository: ShoppingRepository
+    private val shoppingRepository: ShoppingRepository,
+    private val longClickSelectedCount: MutableLiveData<Int>
 ): ViewModel() {
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
     val clickSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
-    val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
 
     var showSideCheckBox: ObservableInt = ObservableInt(View.GONE)
     val countItems: Int
@@ -33,7 +33,6 @@ class ShoppingViewModel @Inject constructor(
 
     fun init() {
         clickSelected.value = null
-        longClickSelectedCount.value = null
         selectedIds.clear()
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
@@ -44,9 +43,9 @@ class ShoppingViewModel @Inject constructor(
     }
 
     private fun validateShoppingList() {
-        //TODO собирать на модели, а id
         val archiveList = mutableListOf<ShoppingModel>()
         val newShoppingList = mutableListOf<ShoppingModel>()
+
         for (shopping in shoppingList) {
             if (shopping.productsAll == shopping.productsActive) {
                 archiveList.add(shopping)
@@ -55,6 +54,7 @@ class ShoppingViewModel @Inject constructor(
             newShoppingList.add(shopping)
         }
         shoppingList = newShoppingList
+
         viewModelScope.launch {
             shoppingRepository.updateAll(archiveList)
         }

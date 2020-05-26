@@ -5,17 +5,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.skriplenok.shoppinglist.R
+import javax.inject.Inject
 
 
-class ShoppingToolbar(
+class ShoppingToolbar @Inject constructor(
     private val toolbar: Toolbar,
+    private val itemSelected: MutableLiveData<ItemMenu>,
     count: LiveData<Int>
 ) {
 
-    val itemSelected: MutableLiveData<ItemMenu> = MutableLiveData()
     private var isActionMode: Boolean = false
 
     init {
+        itemSelected.value = null
         toolbar.apply {
             setOnMenuItemClickListener {
                 menuItemClickListener(it)

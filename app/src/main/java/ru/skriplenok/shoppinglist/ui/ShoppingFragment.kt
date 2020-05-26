@@ -7,13 +7,17 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
+import ru.skriplenok.shoppinglist.injection.components.DaggerShoppingFragmentComponent
+import ru.skriplenok.shoppinglist.injection.modules.RoomModule
+import ru.skriplenok.shoppinglist.injection.modules.ShoppingToolbarModule
+import ru.skriplenok.shoppinglist.injection.modules.ShoppingViewModelModule
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 import javax.inject.Inject
@@ -22,15 +26,25 @@ class ShoppingFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ShoppingViewModel
-    private lateinit var shoppingToolbar: ShoppingToolbar
+    @Inject
+    lateinit var shoppingToolbar: ShoppingToolbar
     private lateinit var navController: NavController
+    private val itemSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
+    private val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        App.appComponent.inject(this)
-        setBindings(savedInstanceState)
+        val binding =
+            DataBindingUtil.setContentView<ShoppingFragmentBinding>(activity!!, R.layout.shopping_fragment)
+        DaggerShoppingFragmentComponent.builder()
+            .shoppingViewModelModule(ShoppingViewModelModule(longClickSelectedCount))
+            .roomModule(RoomModule(requireContext()))
+            .shoppingToolbarModule(ShoppingToolbarModule(binding.toolbar, itemSelected, longClickSelectedCount))
+            .build()
+            .inject(this)
+        setBindings(savedInstanceState, binding)
         return inflater.inflate(R.layout.shopping_fragment, container, false)
     }
 
@@ -39,28 +53,20 @@ class ShoppingFragment: Fragment() {
         navController = Navigation.findNavController(view)
     }
 
-    private fun setBindings(savedInstanceState: Bundle?) {
-        val binding =
-            DataBindingUtil.setContentView<ShoppingFragmentBinding>(activity!!, R.layout.shopping_fragment)
-
-        setToolbar(binding)
+    private fun setBindings(savedInstanceState: Bundle?, binding: ShoppingFragmentBinding) {
+        setToolbar()
         viewModel.init()
         binding.model = viewModel
-        setupListUpdate()
+        setupListClick()
     }
 
-    private fun setToolbar(binding: ShoppingFragmentBinding) {
-        shoppingToolbar = ShoppingToolbar(binding.toolbar, viewModel.longClickSelectedCount)
-        shoppingToolbar.itemSelected.observe(viewLifecycleOwner, Observer {
+    private fun setToolbar() {
+        itemSelected.observe(viewLifecycleOwner, Observer {
             if (it === ShoppingToolbar.ItemMenu.ADD) {
                 navController.navigate(R.id.creatorFragment)
             }
         })
-        viewModel.setMenuItemClickListener(shoppingToolbar.itemSelected)
-    }
-
-    private fun setupListUpdate() {
-        setupListClick()
+        viewModel.setMenuItemClickListener(itemSelected)
     }
 
     private fun setupListClick() {
