@@ -67,21 +67,20 @@ class CreatorViewModel @Inject constructor(
     }
 
     private fun onClickShoppingSave(itemMenu: ItemMenu?) {
-        if (itemMenu == null) {
+        if (itemMenu != ItemMenu.SAVE) {
             return
         }
         if (!validateShopping()) {
             return
         }
-        if (itemMenu == ItemMenu.SAVE) {
-            runBlocking {
-                val shoppingDto = ShoppingDto(name = title.get()!!)
-                val shoppingId = shoppingRepository.insert(shoppingDto)
-                setShoppingId(shoppingId)
-                productRepository.insertAll(productList)
-            }
-            onClose.value = true
+
+        runBlocking {
+            val shoppingDto = ShoppingDto(name = title.get()!!)
+            val shoppingId = shoppingRepository.insert(shoppingDto)
+            setShoppingId(shoppingId)
+            productRepository.insertAll(productList)
         }
+        onClose.value = true
     }
 
     private fun validateShopping(): Boolean {

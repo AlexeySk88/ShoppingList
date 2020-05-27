@@ -20,8 +20,6 @@ class ProductsViewModel @Inject constructor(
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
-    val loading: ObservableInt = ObservableInt(View.GONE)
-
     private var productList: MutableList<ProductModel> = mutableListOf()
 
     fun init(shoppingId: Int) {
@@ -29,8 +27,6 @@ class ProductsViewModel @Inject constructor(
             productList = productRepository.getByShoppingId(shoppingId)
         }
     }
-
-    fun setModelInAdapter() = adapter.notifyDataSetChanged()
 
     override fun getTitle(position: Int): String? {
         if (position < itemCount()) {

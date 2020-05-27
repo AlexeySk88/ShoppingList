@@ -16,6 +16,4 @@ interface AppComponent {
     fun getShoppingRepository(): ShoppingRepository
 
     fun getProductTypeDao(): ProductTypeDao
-
-    fun inject(fragment: ProductsFragment)
 }

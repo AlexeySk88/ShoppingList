@@ -12,7 +12,6 @@ class CreatorToolbar @Inject constructor(
 ) {
 
     init {
-        itemSelected.value = null
         toolbar.apply {
             inflateMenu(R.menu.creator_menu)
             title = resources.getString(R.string.creator_title)

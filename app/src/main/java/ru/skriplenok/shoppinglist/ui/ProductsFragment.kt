@@ -4,13 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.toolbar.view.*
 import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
+import ru.skriplenok.shoppinglist.injection.components.DaggerProductFragmentComponent
+import ru.skriplenok.shoppinglist.injection.modules.ProductToolbarModule
+import ru.skriplenok.shoppinglist.injection.modules.RoomModule
+import ru.skriplenok.shoppinglist.services.ProductToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 import javax.inject.Inject
 
@@ -18,33 +27,32 @@ class ProductsFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ProductsViewModel
+    @Inject
+    lateinit var productToolbar: ProductToolbar
     private var shoppingId: Int? = null
     private var shoppingTitle: String? = null
+    private val itemSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
+    private lateinit var navController: NavController;
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        App.appComponent.inject(this)
-        setBindings(savedInstanceState)
+        setArguments()
+        val binding = getBinding()
+        injectComponents(binding.includeToolbar.toolbar)
+        setBindings(savedInstanceState, binding)
         return inflater.inflate(R.layout.products_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.title = shoppingTitle
+        navController = Navigation.findNavController(view)
     }
 
-    private fun setBindings(savedInstanceState: Bundle?) {
-        val binding =
-            DataBindingUtil.setContentView<ProductsFragmentBinding>(activity!!, R.layout.products_fragment)
-
-        binding.includeToolbar.toolbar.title = "SIMPLE TEXT"
-        setArguments()
-        viewModel.init(shoppingId!!)
-        binding.model = viewModel
-        setupListUpdate()
+    private fun getBinding(): ProductsFragmentBinding {
+        return DataBindingUtil.setContentView(requireActivity(), R.layout.products_fragment)
     }
 
     private fun setArguments() {
@@ -52,9 +60,25 @@ class ProductsFragment: Fragment() {
         shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
     }
 
-    private fun setupListUpdate() {
-        viewModel.loading.set(View.VISIBLE)
-        viewModel.setModelInAdapter()
-        viewModel.loading.set(View.GONE)
+    private fun injectComponents(toolbar: Toolbar) {
+        DaggerProductFragmentComponent.builder()
+            .roomModule(RoomModule(requireContext()))
+            .productToolbarModule(ProductToolbarModule(toolbar, shoppingTitle,
+                itemSelected))
+            .build()
+            .inject(this)
+    }
+    private fun setBindings(savedInstanceState: Bundle?, binding: ProductsFragmentBinding) {
+        viewModel.init(shoppingId!!)
+        binding.model = viewModel
+        observedItemSelected()
+    }
+
+    private fun observedItemSelected() {
+        itemSelected.observe(viewLifecycleOwner, Observer {
+            if (it == ProductToolbar.ItemMenu.ARROW) {
+                navController.popBackStack()
+            }
+        })
     }
 }
