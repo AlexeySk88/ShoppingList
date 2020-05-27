@@ -11,10 +11,10 @@ import javax.inject.Singleton
 @Module
 class CreatorToolbarModule(
     private val toolbar: Toolbar,
-    private val itemSelected: MutableLiveData<ItemMenu>
+    private val toolbarMenuSelected: MutableLiveData<ItemMenu>
 ) {
 
     @Provides
     @Singleton
-    fun provideCreatorToolbar(): CreatorToolbar = CreatorToolbar(toolbar, itemSelected)
+    fun provideCreatorToolbar(): CreatorToolbar = CreatorToolbar(toolbar, toolbarMenuSelected)
 }

@@ -12,10 +12,10 @@ import javax.inject.Singleton
 class ProductToolbarModule(
     private val toolbar: Toolbar,
     private val title: String?,
-    private val itemSelected: MutableLiveData<ItemMenu>
+    private val toolbarMenuSelected: MutableLiveData<ItemMenu>
 ) {
 
     @Provides
     @Singleton
-    fun provideProductToolbar(): ProductToolbar = ProductToolbar(toolbar, title, itemSelected)
+    fun provideProductToolbar(): ProductToolbar = ProductToolbar(toolbar, title, toolbarMenuSelected)
 }

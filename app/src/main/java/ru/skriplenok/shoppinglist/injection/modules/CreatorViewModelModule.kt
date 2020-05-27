@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 class CreatorViewModelModule(
-    private val itemSelected: MutableLiveData<ItemMenu>
+    private val toolbarMenuSelected: MutableLiveData<ItemMenu>
 ) {
 
     @Provides
@@ -20,6 +20,6 @@ class CreatorViewModelModule(
         shoppingRepo: ShoppingRepository,
         productRepo: ProductRepository
     ): CreatorViewModel {
-        return CreatorViewModel(shoppingRepo, productRepo, itemSelected)
+        return CreatorViewModel(shoppingRepo, productRepo, toolbarMenuSelected)
     }
 }

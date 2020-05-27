@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 class ShoppingToolbar @Inject constructor(
     private val toolbar: Toolbar,
-    private val itemSelected: MutableLiveData<ItemMenu>,
+    private val toolbarMenuSelected: MutableLiveData<ItemMenu>,
     count: LiveData<Int>
 ) {
 
     private var isActionMode: Boolean = false
 
     init {
-        itemSelected.value = null
+        toolbarMenuSelected.value = null
         toolbar.apply {
             setOnMenuItemClickListener {
                 menuItemClickListener(it)
@@ -35,7 +35,7 @@ class ShoppingToolbar @Inject constructor(
     private fun menuItemClickListener(itemClick: MenuItem):Boolean {
         for (item in ItemMenu.values()) {
             if (item.id == itemClick.itemId) {
-                itemSelected.value = item
+                toolbarMenuSelected.value = item
                 break
             }
         }
@@ -45,7 +45,7 @@ class ShoppingToolbar @Inject constructor(
     private fun navigationClickListener() {
         setDefaultMode()
         isActionMode = false
-        itemSelected.value = ItemMenu.ARROW
+        toolbarMenuSelected.value = ItemMenu.ARROW
     }
 
     private fun setDefaultMode() {

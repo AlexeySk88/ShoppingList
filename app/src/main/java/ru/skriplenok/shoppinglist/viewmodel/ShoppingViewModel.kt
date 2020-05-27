@@ -12,14 +12,13 @@ import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
-import ru.skriplenok.shoppinglist.services.ShoppingToolbar
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
 import javax.inject.Inject
 
 class ShoppingViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
     private val longClickSelectedCount: MutableLiveData<Int>,
-    private val itemSelected: MutableLiveData<ItemMenu>
+    private val toolbarMenuSelected: MutableLiveData<ItemMenu>
 ): ViewModel() {
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
@@ -35,7 +34,7 @@ class ShoppingViewModel @Inject constructor(
 
     fun init() {
         clickSelected.value = null
-        itemSelected.observeForever {
+        toolbarMenuSelected.observeForever {
             setMenuItemClickListener(it)
         }
         selectedIds.clear()

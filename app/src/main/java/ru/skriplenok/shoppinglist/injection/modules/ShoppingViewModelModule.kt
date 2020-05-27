@@ -11,12 +11,12 @@ import javax.inject.Singleton
 @Module
 class ShoppingViewModelModule(
     private val longClickSelectedCount: MutableLiveData<Int>,
-    private val itemSelected: MutableLiveData<ShoppingToolbar.ItemMenu>
+    private val toolbarMenuSelected: MutableLiveData<ShoppingToolbar.ItemMenu>
 ) {
 
     @Provides
     @Singleton
     fun provideShoppingViewModel(shoppingRepository: ShoppingRepository): ShoppingViewModel {
-        return ShoppingViewModel(shoppingRepository, longClickSelectedCount, itemSelected)
+        return ShoppingViewModel(shoppingRepository, longClickSelectedCount, toolbarMenuSelected)
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -30,22 +31,15 @@ class ShoppingFragment: Fragment() {
     @Inject
     lateinit var shoppingToolbar: ShoppingToolbar
     private lateinit var navController: NavController
-    private val itemSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
+    private val toolbarMenuSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
     private val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding =
-            DataBindingUtil.setContentView<ShoppingFragmentBinding>(requireActivity(), R.layout.shopping_fragment)
-        DaggerShoppingFragmentComponent.builder()
-            .roomModule(RoomModule(requireContext()))
-            .shoppingViewModelModule(ShoppingViewModelModule(longClickSelectedCount, itemSelected))
-            .shoppingToolbarModule(ShoppingToolbarModule(binding.includeToolbar.toolbar, itemSelected,
-                                                         longClickSelectedCount))
-            .build()
-            .inject(this)
+        val binding = getBinding()
+        injectComponents(binding.includeToolbar.toolbar)
         setBindings(savedInstanceState, binding)
         return inflater.inflate(R.layout.shopping_fragment, container, false)
     }
@@ -53,6 +47,19 @@ class ShoppingFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+    }
+
+    private fun getBinding(): ShoppingFragmentBinding {
+        return DataBindingUtil.setContentView(requireActivity(), R.layout.shopping_fragment)
+    }
+
+    private fun injectComponents(toolbar: Toolbar) {
+        DaggerShoppingFragmentComponent.builder()
+            .roomModule(RoomModule(requireContext()))
+            .shoppingViewModelModule(ShoppingViewModelModule(longClickSelectedCount, toolbarMenuSelected))
+            .shoppingToolbarModule(ShoppingToolbarModule(toolbar, toolbarMenuSelected, longClickSelectedCount))
+            .build()
+            .inject(this)
     }
 
     private fun setBindings(savedInstanceState: Bundle?, binding: ShoppingFragmentBinding) {
@@ -63,7 +70,7 @@ class ShoppingFragment: Fragment() {
     }
 
     private fun setToolbar() {
-        itemSelected.observe(viewLifecycleOwner, Observer {
+        toolbarMenuSelected.observe(viewLifecycleOwner, Observer {
             if (it === ShoppingToolbar.ItemMenu.ADD) {
                 navController.navigate(R.id.creatorFragment)
             }

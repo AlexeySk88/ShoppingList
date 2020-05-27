@@ -25,7 +25,7 @@ import javax.inject.Inject
 class CreatorViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
     private val productRepository: ProductRepository,
-    itemSelected: MutableLiveData<ItemMenu>
+    toolbarMenuSelected: MutableLiveData<ItemMenu>
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
@@ -53,7 +53,7 @@ class CreatorViewModel @Inject constructor(
 
     init {
         setProductsNumber()
-        itemSelected.observeForever {
+        toolbarMenuSelected.observeForever {
             onClickShoppingSave(it)
         }
     }

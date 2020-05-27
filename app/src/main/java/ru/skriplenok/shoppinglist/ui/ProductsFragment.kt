@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.toolbar.view.*
-import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
@@ -31,7 +30,7 @@ class ProductsFragment: Fragment() {
     lateinit var productToolbar: ProductToolbar
     private var shoppingId: Int? = null
     private var shoppingTitle: String? = null
-    private val itemSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
+    private val toolbarMenuSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
 
     override fun onCreateView(
@@ -64,7 +63,7 @@ class ProductsFragment: Fragment() {
         DaggerProductFragmentComponent.builder()
             .roomModule(RoomModule(requireContext()))
             .productToolbarModule(ProductToolbarModule(toolbar, shoppingTitle,
-                itemSelected))
+                toolbarMenuSelected))
             .build()
             .inject(this)
     }
@@ -75,7 +74,7 @@ class ProductsFragment: Fragment() {
     }
 
     private fun observedItemSelected() {
-        itemSelected.observe(viewLifecycleOwner, Observer {
+        toolbarMenuSelected.observe(viewLifecycleOwner, Observer {
             if (it == ProductToolbar.ItemMenu.ARROW) {
                 navController.popBackStack()
             }

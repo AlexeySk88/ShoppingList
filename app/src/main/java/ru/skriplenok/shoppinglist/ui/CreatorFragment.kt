@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -29,22 +30,15 @@ class CreatorFragment: Fragment() {
     @Inject
     lateinit var creatorToolbar: CreatorToolbar
     private lateinit var navController: NavController;
-    private val itemSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
+    private val toolbarMenuSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding =
-            DataBindingUtil.setContentView<CreatorFragmentBinding>(requireActivity(), R.layout.creator_fragment)
-        DaggerCreatorFragmentComponent.builder()
-            .roomModule(RoomModule(requireContext()))
-            .creatorToolbarModule(CreatorToolbarModule(binding.includeToolbar.toolbar, itemSelected))
-            .creatorViewModelModule(CreatorViewModelModule(itemSelected))
-            .build()
-            .inject(this)
-
+        val binding = getBinding()
+        injectComponents(binding.includeToolbar.toolbar)
         setBinding(savedInstanceState, binding)
         return inflater.inflate(R.layout.creator_fragment, container, false)
     }
@@ -52,6 +46,19 @@ class CreatorFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+    }
+
+    private fun getBinding(): CreatorFragmentBinding {
+        return DataBindingUtil.setContentView(requireActivity(), R.layout.creator_fragment)
+    }
+
+    private fun injectComponents(toolbar: Toolbar) {
+        DaggerCreatorFragmentComponent.builder()
+            .roomModule(RoomModule(requireContext()))
+            .creatorToolbarModule(CreatorToolbarModule(toolbar, toolbarMenuSelected))
+            .creatorViewModelModule(CreatorViewModelModule(toolbarMenuSelected))
+            .build()
+            .inject(this)
     }
 
     private fun setBinding(savedInstanceState: Bundle?, binding: CreatorFragmentBinding) {
@@ -68,7 +75,7 @@ class CreatorFragment: Fragment() {
             }
         })
 
-        itemSelected.observe(viewLifecycleOwner, Observer {
+        toolbarMenuSelected.observe(viewLifecycleOwner, Observer {
             if (it == CreatorToolbar.ItemMenu.CLOSE) {
                 navController.popBackStack()
             }
