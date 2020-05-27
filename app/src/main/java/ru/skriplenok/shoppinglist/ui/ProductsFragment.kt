@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.toolbar.view.*
 import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
@@ -39,6 +40,7 @@ class ProductsFragment: Fragment() {
         val binding =
             DataBindingUtil.setContentView<ProductsFragmentBinding>(activity!!, R.layout.products_fragment)
 
+        binding.includeToolbar.toolbar.title = "SIMPLE TEXT"
         setArguments()
         viewModel.init(shoppingId!!)
         binding.model = viewModel

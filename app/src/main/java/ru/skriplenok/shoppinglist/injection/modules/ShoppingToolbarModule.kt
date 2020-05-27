@@ -6,12 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import dagger.Module
 import dagger.Provides
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar
+import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
 import javax.inject.Singleton
 
 @Module
 class ShoppingToolbarModule(
     private val toolbar: Toolbar,
-    private val itemSelected: MutableLiveData<ShoppingToolbar.ItemMenu>,
+    private val itemSelected: MutableLiveData<ItemMenu>,
     private val count: LiveData<Int>
 ) {
 

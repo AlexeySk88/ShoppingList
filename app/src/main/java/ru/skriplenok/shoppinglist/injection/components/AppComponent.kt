@@ -18,6 +18,4 @@ interface AppComponent {
     fun getProductTypeDao(): ProductTypeDao
 
     fun inject(fragment: ProductsFragment)
-
-    fun inject(fragment: CreatorFragment)
 }

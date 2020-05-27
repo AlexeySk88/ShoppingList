@@ -12,12 +12,14 @@ import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
+import ru.skriplenok.shoppinglist.services.ShoppingToolbar
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
 import javax.inject.Inject
 
 class ShoppingViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
-    private val longClickSelectedCount: MutableLiveData<Int>
+    private val longClickSelectedCount: MutableLiveData<Int>,
+    private val itemSelected: MutableLiveData<ItemMenu>
 ): ViewModel() {
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
@@ -33,12 +35,26 @@ class ShoppingViewModel @Inject constructor(
 
     fun init() {
         clickSelected.value = null
+        itemSelected.observeForever {
+            setMenuItemClickListener(it)
+        }
         selectedIds.clear()
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
         }
         if (!shoppingList.isNullOrEmpty()) {
             validateShoppingList()
+        }
+    }
+
+    private fun setMenuItemClickListener(itemMenu: ItemMenu?) {
+        if (itemMenu === null) {
+            return
+        }
+        if (itemMenu === ItemMenu.ARROW) {
+            selectedIds.clear()
+            setShowSideCheckBox(View.GONE)
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -114,19 +130,6 @@ class ShoppingViewModel @Inject constructor(
             selectedIds.remove(shoppingId)
         } else {
             selectedIds.add(shoppingId)
-        }
-    }
-
-    fun setMenuItemClickListener(itemMenu: MutableLiveData<ItemMenu>) {
-        itemMenu.observeForever {
-            if (itemMenu.value === null) {
-                return@observeForever
-            }
-            if (itemMenu.value === ItemMenu.ARROW) {
-                selectedIds.clear()
-                setShowSideCheckBox(View.GONE)
-                adapter.notifyDataSetChanged()
-            }
         }
     }
 }

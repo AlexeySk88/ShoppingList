@@ -19,11 +19,13 @@ import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
+import ru.skriplenok.shoppinglist.services.CreatorToolbar.ItemMenu
 import javax.inject.Inject
 
 class CreatorViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    itemSelected: MutableLiveData<ItemMenu>
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
@@ -51,6 +53,9 @@ class CreatorViewModel @Inject constructor(
 
     init {
         setProductsNumber()
+        itemSelected.observeForever {
+            onClickShoppingSave(it)
+        }
     }
 
     private fun setProductsNumber() {
@@ -60,6 +65,43 @@ class CreatorViewModel @Inject constructor(
         }
         productsNumber.set("Добавьте в список хотя бы один товар")
     }
+
+    private fun onClickShoppingSave(itemMenu: ItemMenu?) {
+        if (itemMenu == null) {
+            return
+        }
+        if (!validateShopping()) {
+            return
+        }
+        if (itemMenu == ItemMenu.SAVE) {
+            runBlocking {
+                val shoppingDto = ShoppingDto(name = title.get()!!)
+                val shoppingId = shoppingRepository.insert(shoppingDto)
+                setShoppingId(shoppingId)
+                productRepository.insertAll(productList)
+            }
+            onClose.value = true
+        }
+    }
+
+    private fun validateShopping(): Boolean {
+        val sb = StringBuilder()
+        if (title.get().isNullOrEmpty()) {
+            sb.append(formatItemValidateMessage(Constants.NAME_SHOPPING.value))
+        }
+        if (productList.size == 0) {
+            sb.append(formatItemValidateMessage(Constants.PRODUCT_COUNT.value))
+        }
+
+        if (sb.isNotEmpty()) {
+            sb.insert(0, Constants.CREATOR_NOT_VALIDATED.value + ":")
+            toastMessage.value = sb.toString()
+            return false
+        }
+        return true
+    }
+
+    private fun formatItemValidateMessage(item: String) = "\n\t• $item"
 
     fun setSpinnerAdapter(context: Context) {
         val spinnerTypes: MutableList<String> = mutableListOf()
@@ -127,38 +169,6 @@ class CreatorViewModel @Inject constructor(
         if (sb.isNotEmpty()) {
             sb.insert(0, Constants.CREATOR_NOT_VALIDATED.value + ":")
             toastMessage.value  = sb.toString()
-            return false
-        }
-        return true
-    }
-
-    private fun formatItemValidateMessage(item: String) = "\n\t• $item"
-
-    fun onClickShoppingSave() {
-        if (!validateShopping()) {
-            return
-        }
-        runBlocking {
-            val shoppingDto = ShoppingDto(name = title.get()!!)
-            val shoppingId = shoppingRepository.insert(shoppingDto)
-            setShoppingId(shoppingId)
-            productRepository.insertAll(productList)
-        }
-        onClose.value = true
-    }
-
-    private fun validateShopping(): Boolean {
-        val sb = StringBuilder()
-        if (title.get().isNullOrEmpty()) {
-            sb.append(formatItemValidateMessage(Constants.NAME_SHOPPING.value))
-        }
-        if (productList.size == 0) {
-            sb.append(formatItemValidateMessage(Constants.PRODUCT_COUNT.value))
-        }
-
-        if (sb.isNotEmpty()) {
-            sb.insert(0, Constants.CREATOR_NOT_VALIDATED.value + ":")
-            toastMessage.value = sb.toString()
             return false
         }
         return true

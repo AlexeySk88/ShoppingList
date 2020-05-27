@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import kotlinx.android.synthetic.main.toolbar.view.*
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
@@ -37,11 +38,12 @@ class ShoppingFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding =
-            DataBindingUtil.setContentView<ShoppingFragmentBinding>(activity!!, R.layout.shopping_fragment)
+            DataBindingUtil.setContentView<ShoppingFragmentBinding>(requireActivity(), R.layout.shopping_fragment)
         DaggerShoppingFragmentComponent.builder()
-            .shoppingViewModelModule(ShoppingViewModelModule(longClickSelectedCount))
             .roomModule(RoomModule(requireContext()))
-            .shoppingToolbarModule(ShoppingToolbarModule(binding.toolbar, itemSelected, longClickSelectedCount))
+            .shoppingViewModelModule(ShoppingViewModelModule(longClickSelectedCount, itemSelected))
+            .shoppingToolbarModule(ShoppingToolbarModule(binding.includeToolbar.toolbar, itemSelected,
+                                                         longClickSelectedCount))
             .build()
             .inject(this)
         setBindings(savedInstanceState, binding)
@@ -66,7 +68,6 @@ class ShoppingFragment: Fragment() {
                 navController.navigate(R.id.creatorFragment)
             }
         })
-        viewModel.setMenuItemClickListener(itemSelected)
     }
 
     private fun setupListClick() {

@@ -3,4 +3,6 @@
 
     <string name="shopping_default_title">Список покупок</string>
     <string name="shopping_action_mode_title">Выбрано:</string>
+
+    <string name="creator_title">Создать новый список</string>
 </resources>

@@ -8,7 +8,11 @@ import ru.skriplenok.shoppinglist.ui.ShoppingFragment
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ShoppingViewModelModule::class, ShoppingToolbarModule::class, RoomModule::class])
+@Component(modules = [
+    ShoppingViewModelModule::class,
+    ShoppingToolbarModule::class,
+    RoomModule::class
+])
 interface ShoppingFragmentComponent {
 
     fun inject(shoppingFragment: ShoppingFragment)
