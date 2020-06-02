@@ -12,12 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.toolbar.view.*
+import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
-import ru.skriplenok.shoppinglist.injection.components.DaggerProductFragmentComponent
-import ru.skriplenok.shoppinglist.injection.modules.ProductToolbarModule
-import ru.skriplenok.shoppinglist.injection.modules.RoomModule
+import ru.skriplenok.shoppinglist.injection.modules.ProductModule
 import ru.skriplenok.shoppinglist.services.ProductToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 import javax.inject.Inject
@@ -28,10 +27,11 @@ class ProductsFragment: Fragment() {
     lateinit var viewModel: ProductsViewModel
     @Inject
     lateinit var productToolbar: ProductToolbar
-    private var shoppingId: Int? = null
-    private var shoppingTitle: String? = null
-    private val toolbarMenuSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
+    lateinit var toolbarView: Toolbar
+    var shoppingTitle: String? = null
+    val toolbarMenuSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
+    private var shoppingId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +40,8 @@ class ProductsFragment: Fragment() {
     ): View? {
         setArguments()
         val binding = getBinding()
-        injectComponents(binding.includeToolbar.toolbar)
+        toolbarView = binding.includeToolbar.toolbar
+        App.appComponent.productComponent(ProductModule(this)).inject(this)
         setBindings(savedInstanceState, binding)
         return inflater.inflate(R.layout.products_fragment, container, false)
     }
@@ -59,14 +60,6 @@ class ProductsFragment: Fragment() {
         shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
     }
 
-    private fun injectComponents(toolbar: Toolbar) {
-        DaggerProductFragmentComponent.builder()
-            .roomModule(RoomModule(requireContext()))
-            .productToolbarModule(ProductToolbarModule(toolbar, shoppingTitle,
-                toolbarMenuSelected))
-            .build()
-            .inject(this)
-    }
     private fun setBindings(savedInstanceState: Bundle?, binding: ProductsFragmentBinding) {
         viewModel.init(shoppingId!!)
         binding.model = viewModel

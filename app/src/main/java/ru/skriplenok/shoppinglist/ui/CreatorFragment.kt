@@ -13,12 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.toolbar.view.*
+import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.CreatorFragmentBinding
-import ru.skriplenok.shoppinglist.injection.components.DaggerCreatorFragmentComponent
-import ru.skriplenok.shoppinglist.injection.modules.CreatorToolbarModule
-import ru.skriplenok.shoppinglist.injection.modules.CreatorViewModelModule
-import ru.skriplenok.shoppinglist.injection.modules.RoomModule
+import ru.skriplenok.shoppinglist.injection.modules.CreatorModule
 import ru.skriplenok.shoppinglist.services.CreatorToolbar
 import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
 import javax.inject.Inject
@@ -29,8 +27,9 @@ class CreatorFragment: Fragment() {
     lateinit var viewModel: CreatorViewModel
     @Inject
     lateinit var creatorToolbar: CreatorToolbar
+    lateinit var toolbarView: Toolbar
+    val toolbarMenuSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
-    private val toolbarMenuSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +37,8 @@ class CreatorFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = getBinding()
-        injectComponents(binding.includeToolbar.toolbar)
+        toolbarView = binding.includeToolbar.toolbar
+        App.appComponent.creatorComponent(CreatorModule(this)).inject(this)
         setBinding(savedInstanceState, binding)
         return inflater.inflate(R.layout.creator_fragment, container, false)
     }
@@ -50,15 +50,6 @@ class CreatorFragment: Fragment() {
 
     private fun getBinding(): CreatorFragmentBinding {
         return DataBindingUtil.setContentView(requireActivity(), R.layout.creator_fragment)
-    }
-
-    private fun injectComponents(toolbar: Toolbar) {
-        DaggerCreatorFragmentComponent.builder()
-            .roomModule(RoomModule(requireContext()))
-            .creatorToolbarModule(CreatorToolbarModule(toolbar, toolbarMenuSelected))
-            .creatorViewModelModule(CreatorViewModelModule(toolbarMenuSelected))
-            .build()
-            .inject(this)
     }
 
     private fun setBinding(savedInstanceState: Bundle?, binding: CreatorFragmentBinding) {

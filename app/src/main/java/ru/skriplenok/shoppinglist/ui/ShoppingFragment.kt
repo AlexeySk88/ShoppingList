@@ -13,13 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.toolbar.view.*
+import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
-import ru.skriplenok.shoppinglist.injection.components.DaggerShoppingFragmentComponent
-import ru.skriplenok.shoppinglist.injection.modules.RoomModule
-import ru.skriplenok.shoppinglist.injection.modules.ShoppingToolbarModule
-import ru.skriplenok.shoppinglist.injection.modules.ShoppingViewModelModule
+import ru.skriplenok.shoppinglist.injection.modules.ShoppingModule
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 import javax.inject.Inject
@@ -30,16 +28,18 @@ class ShoppingFragment: Fragment() {
     lateinit var viewModel: ShoppingViewModel
     @Inject
     lateinit var shoppingToolbar: ShoppingToolbar
+    lateinit var toolbarView: Toolbar
     private lateinit var navController: NavController
-    private val toolbarMenuSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
-    private val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
+    val toolbarMenuSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
+    val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding = getBinding()
-        injectComponents(binding.includeToolbar.toolbar)
+        toolbarView = binding.includeToolbar.toolbar
+        App.appComponent.shoppingComponent(ShoppingModule(this)).inject(this)
         setBindings(savedInstanceState, binding)
         return inflater.inflate(R.layout.shopping_fragment, container, false)
     }
@@ -51,15 +51,6 @@ class ShoppingFragment: Fragment() {
 
     private fun getBinding(): ShoppingFragmentBinding {
         return DataBindingUtil.setContentView(requireActivity(), R.layout.shopping_fragment)
-    }
-
-    private fun injectComponents(toolbar: Toolbar) {
-        DaggerShoppingFragmentComponent.builder()
-            .roomModule(RoomModule(requireContext()))
-            .shoppingViewModelModule(ShoppingViewModelModule(longClickSelectedCount, toolbarMenuSelected))
-            .shoppingToolbarModule(ShoppingToolbarModule(toolbar, toolbarMenuSelected, longClickSelectedCount))
-            .build()
-            .inject(this)
     }
 
     private fun setBindings(savedInstanceState: Bundle?, binding: ShoppingFragmentBinding) {
