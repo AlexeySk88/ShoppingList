@@ -25,9 +25,15 @@ class ProductsFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ProductsViewModel
+        private set
+
     @Inject
     lateinit var productToolbar: ProductToolbar
+        private set
+
     lateinit var toolbarView: Toolbar
+        private set
+
     var shoppingTitle: String? = null
     val toolbarMenuSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
@@ -51,13 +57,13 @@ class ProductsFragment: Fragment() {
         navController = Navigation.findNavController(view)
     }
 
-    private fun getBinding(): ProductsFragmentBinding {
-        return DataBindingUtil.setContentView(requireActivity(), R.layout.products_fragment)
-    }
-
     private fun setArguments() {
         shoppingId = arguments?.getInt(Constants.SHOPPING_ID.value)
         shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
+    }
+
+    private fun getBinding(): ProductsFragmentBinding {
+        return DataBindingUtil.setContentView(requireActivity(), R.layout.products_fragment)
     }
 
     private fun setBindings(savedInstanceState: Bundle?, binding: ProductsFragmentBinding) {

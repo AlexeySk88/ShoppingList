@@ -25,9 +25,15 @@ class CreatorFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: CreatorViewModel
+        private set
+
     @Inject
     lateinit var creatorToolbar: CreatorToolbar
+        private set
+
     lateinit var toolbarView: Toolbar
+        private set
+
     val toolbarMenuSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
 
