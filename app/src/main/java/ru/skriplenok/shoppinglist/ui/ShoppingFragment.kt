@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -16,9 +14,7 @@ import kotlinx.android.synthetic.main.toolbar.view.*
 import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
-import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.ShoppingModule
-import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 import javax.inject.Inject
@@ -29,10 +25,10 @@ class ShoppingFragment: Fragment() {
     lateinit var viewModel: ShoppingViewModel
     @Inject
     lateinit var shoppingToolbar: ShoppingToolbar
+
     lateinit var toolbarView: Toolbar
         private set
-    val toolbarMenuSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
-    val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
+
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -56,33 +52,14 @@ class ShoppingFragment: Fragment() {
     }
 
     private fun setBindings(savedInstanceState: Bundle?, binding: ShoppingFragmentBinding) {
-        setToolbar()
-        viewModel.init()
         binding.model = viewModel
-        setupListClick()
+        navigationListener()
     }
 
-    private fun setToolbar() {
-        toolbarMenuSelected.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                ShoppingToolbar.ItemMenu.ADD  -> navController.navigate(R.id.creatorFragment)
-                ShoppingToolbar.ItemMenu.EDIT -> {
-                    val bundle = bundleOf(
-                        Constants.SHOPPING_ID_WITH_TITLE.value to viewModel.itemsSelected.first()
-                    )
-                    navController.navigate(R.id.creatorFragment, bundle)
-                }
-            }
-        })
-    }
-
-    private fun setupListClick() {
-        viewModel.clickSelected.observe(viewLifecycleOwner, Observer {
-            if (it !== null) {
-                val bundle = bundleOf(
-                    Constants.SHOPPING_ID_WITH_TITLE.value to ShoppingIdWithTitle(it.shopping.id, it.shopping.name)
-                )
-                navController.navigate(R.id.productsFragment, bundle)
+    private fun navigationListener() {
+        viewModel.navigation.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                navController.navigate(it.first, it.second)
             }
         })
     }

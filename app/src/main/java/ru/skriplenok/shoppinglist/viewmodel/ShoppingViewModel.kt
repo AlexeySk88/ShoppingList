@@ -1,6 +1,8 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
+import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
+import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.models.ShoppingModel
@@ -23,18 +26,17 @@ class ShoppingViewModel @Inject constructor(
 ): ViewModel() {
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
-    val clickSelected: MutableLiveData<ShoppingModel> = MutableLiveData()
-
     var showSideCheckBox: ObservableInt = ObservableInt(View.GONE)
     val countItems: Int
         get() = shoppingList.count()
+    val navigation: MutableLiveData<Pair<Int, Bundle?>> = MutableLiveData()
     private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
     // id выбранных списков
-    val itemsSelected: MutableSet<ShoppingIdWithTitle> = mutableSetOf()
+    private val itemsSelected: MutableSet<ShoppingIdWithTitle> = mutableSetOf()
 
-    fun init() {
-        clickSelected.value = null
-        longClickSelectedCount.value = 0
+    init {
+        navigation.value = null
+        longClickSelectedCount.value = null
         toolbarMenuSelected.observeForever {
             setMenuItemClickListener(it)
         }
@@ -48,10 +50,19 @@ class ShoppingViewModel @Inject constructor(
     }
 
     private fun setMenuItemClickListener(itemMenu: ItemMenu?) {
-        if (itemMenu === ItemMenu.ARROW) {
-            itemsSelected.clear()
-            setShowSideCheckBox(View.GONE)
-            adapter.notifyDataSetChanged()
+        when (itemMenu) {
+            ItemMenu.ARROW -> {
+                itemsSelected.clear()
+                setShowSideCheckBox(View.GONE)
+                adapter.notifyDataSetChanged()
+            }
+            ItemMenu.ADD  -> navigation.value = Pair(R.id.creatorFragment, null)
+            ItemMenu.EDIT -> {
+                val bundle = bundleOf(
+                    Constants.SHOPPING_ID_WITH_TITLE.value to itemsSelected.first()
+                )
+                navigation.value = Pair(R.id.creatorFragment, bundle)
+            }
         }
     }
 
@@ -92,7 +103,13 @@ class ShoppingViewModel @Inject constructor(
     fun onClick(position: Int) {
         // пока не завершим ActionMode блокируем выбор списка товаров
         if (longClickSelectedCount.value === null) {
-            clickSelected.value = getItem(position)
+            val shoppingModel = getItem(position)
+            shoppingModel?.let {
+                val bundle = bundleOf(
+                    Constants.SHOPPING_ID_WITH_TITLE.value to ShoppingIdWithTitle(it.shopping.id, it.shopping.name)
+                )
+                navigation.value = Pair(R.id.productsFragment, bundle)
+            }
         }
     }
 
