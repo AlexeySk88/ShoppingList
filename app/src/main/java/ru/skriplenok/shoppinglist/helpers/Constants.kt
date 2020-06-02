@@ -1,8 +1,7 @@
 package ru.skriplenok.shoppinglist.helpers
 
 enum class Constants(val value: String) {
-    SHOPPING_ID("shopping_id"),
-    SHOPPING_TITLE("shopping_title"),
+    SHOPPING_ID_WITH_TITLE("shoppingIdWithTitle"),
 
     CREATOR_NOT_VALIDATED("Заполните обязательные поля"),
     NAME_SHOPPING("Название списка продуктов"),

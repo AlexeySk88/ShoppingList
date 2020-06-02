@@ -17,6 +17,7 @@ import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.ProductModule
+import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.services.ProductToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 import javax.inject.Inject
@@ -29,10 +30,10 @@ class ProductsFragment: Fragment() {
     lateinit var productToolbar: ProductToolbar
     lateinit var toolbarView: Toolbar
         private set
-    var shoppingTitle: String? = null
+    lateinit var shoppingIdWithTitle: ShoppingIdWithTitle
+        private set
     val toolbarMenuSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
-    private var shoppingId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,8 +54,7 @@ class ProductsFragment: Fragment() {
     }
 
     private fun setArguments() {
-        shoppingId = arguments?.getInt(Constants.SHOPPING_ID.value)
-        shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
+        shoppingIdWithTitle = arguments?.getParcelable(Constants.SHOPPING_ID_WITH_TITLE.value)!!
     }
 
     private fun getBinding(): ProductsFragmentBinding {
@@ -62,7 +62,6 @@ class ProductsFragment: Fragment() {
     }
 
     private fun setBindings(savedInstanceState: Bundle?, binding: ProductsFragmentBinding) {
-        viewModel.init(shoppingId!!)
         binding.model = viewModel
         observedItemSelected()
     }

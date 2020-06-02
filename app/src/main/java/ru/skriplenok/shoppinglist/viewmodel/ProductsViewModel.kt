@@ -16,13 +16,14 @@ import java.util.*
 import javax.inject.Inject
 
 class ProductsViewModel @Inject constructor(
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    shoppingId: Int
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     private var productList: MutableList<ProductModel> = mutableListOf()
 
-    fun init(shoppingId: Int) {
+    init{
         runBlocking {
             productList = productRepository.getByShoppingId(shoppingId)
         }

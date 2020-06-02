@@ -15,6 +15,7 @@ import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.helpers.QuantityTypes
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
+import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class CreatorViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
     private val productRepository: ProductRepository,
+    private val shoppingIdWithTitle: ShoppingIdWithTitle?,
     toolbarMenuSelected: MutableLiveData<ItemMenu>
 ): ViewModel(), ProductCellViewModel {
 
@@ -52,9 +54,19 @@ class CreatorViewModel @Inject constructor(
     private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {
+        setTitleAndProductList()
         setProductsNumber()
         toolbarMenuSelected.observeForever {
             onClickShoppingSave(it)
+        }
+    }
+
+    private fun setTitleAndProductList() {
+        if (shoppingIdWithTitle != null) {
+            title.set(shoppingIdWithTitle.title)
+            runBlocking {
+                productList.addAll(productRepository.getByShoppingId(shoppingIdWithTitle.id))
+            }
         }
     }
 

@@ -24,7 +24,9 @@ class CreatorModule(
         return CreatorViewModel(
             shoppingRepo,
             productRepo,
-            creatorFragment.toolbarMenuSelected)
+            creatorFragment.shoppingIdWithTitle,
+            creatorFragment.toolbarMenuSelected
+        )
     }
 
     @CreatorScope

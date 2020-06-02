@@ -18,6 +18,7 @@ import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.ShoppingFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.ShoppingModule
+import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 import javax.inject.Inject
@@ -63,8 +64,14 @@ class ShoppingFragment: Fragment() {
 
     private fun setToolbar() {
         toolbarMenuSelected.observe(viewLifecycleOwner, Observer {
-            if (it === ShoppingToolbar.ItemMenu.ADD) {
-                navController.navigate(R.id.creatorFragment)
+            when (it) {
+                ShoppingToolbar.ItemMenu.ADD  -> navController.navigate(R.id.creatorFragment)
+                ShoppingToolbar.ItemMenu.EDIT -> {
+                    val bundle = bundleOf(
+                        Constants.SHOPPING_ID_WITH_TITLE.value to viewModel.itemsSelected.first()
+                    )
+                    navController.navigate(R.id.creatorFragment, bundle)
+                }
             }
         })
     }
@@ -73,8 +80,7 @@ class ShoppingFragment: Fragment() {
         viewModel.clickSelected.observe(viewLifecycleOwner, Observer {
             if (it !== null) {
                 val bundle = bundleOf(
-                    Constants.SHOPPING_ID.value to it.shopping.id,
-                    Constants.SHOPPING_TITLE.value to it.shopping.name
+                    Constants.SHOPPING_ID_WITH_TITLE.value to ShoppingIdWithTitle(it.shopping.id, it.shopping.name)
                 )
                 navController.navigate(R.id.productsFragment, bundle)
             }

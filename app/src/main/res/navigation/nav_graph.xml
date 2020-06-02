@@ -24,16 +24,17 @@
         android:label="ProductsFragment"
         tools:layout="@layout/products_fragment">
         <argument
-            android:name="shopping_id"
-            app:argType="integer" />
-        <argument
-            android:name="shopping_title"
-            app:argType="string" />
+            android:name="shoppingIdWithTitle"
+            app:argType="ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle" />
     </fragment>
 
     <fragment
         android:id="@+id/creatorFragment"
         android:name="ru.skriplenok.shoppinglist.ui.CreatorFragment"
         android:label="creator_fragment"
-        tools:layout="@layout/creator_fragment" />
+        tools:layout="@layout/creator_fragment" >
+        <argument
+            android:name="shoppingIdWithTitle"
+            app:argType="ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle" />
+    </fragment>
 </navigation>

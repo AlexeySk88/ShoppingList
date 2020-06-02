@@ -18,6 +18,7 @@ import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.CreatorFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.CreatorModule
+import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.services.CreatorToolbar
 import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
 import javax.inject.Inject
@@ -30,10 +31,10 @@ class CreatorFragment: Fragment() {
     lateinit var creatorToolbar: CreatorToolbar
     lateinit var toolbarView: Toolbar
         private set
-    var shoppingTitle: String? = null
+    var shoppingIdWithTitle: ShoppingIdWithTitle? = null
+        private set
     val toolbarMenuSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
-    private var shoppingId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,8 +55,7 @@ class CreatorFragment: Fragment() {
     }
 
     private fun setArguments() {
-        shoppingId = arguments?.getInt(Constants.SHOPPING_ID.value)
-        shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
+        shoppingIdWithTitle = arguments?.getParcelable(Constants.SHOPPING_ID_WITH_TITLE.value)
     }
 
     private fun getBinding(): CreatorFragmentBinding {

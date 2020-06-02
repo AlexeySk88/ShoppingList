@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ShoppingAdapter
 import ru.skriplenok.shoppinglist.helpers.StringHelper
+import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
@@ -27,17 +28,17 @@ class ShoppingViewModel @Inject constructor(
     var showSideCheckBox: ObservableInt = ObservableInt(View.GONE)
     val countItems: Int
         get() = shoppingList.count()
-
-    // id выбранных списков
-    private val selectedIds: MutableSet<Int> = mutableSetOf()
     private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
+    // id выбранных списков
+    val itemsSelected: MutableSet<ShoppingIdWithTitle> = mutableSetOf()
 
     fun init() {
         clickSelected.value = null
+        longClickSelectedCount.value = 0
         toolbarMenuSelected.observeForever {
             setMenuItemClickListener(it)
         }
-        selectedIds.clear()
+        itemsSelected.clear()
         runBlocking {
             shoppingList = shoppingRepository.getAllActive()
         }
@@ -47,11 +48,8 @@ class ShoppingViewModel @Inject constructor(
     }
 
     private fun setMenuItemClickListener(itemMenu: ItemMenu?) {
-        if (itemMenu === null) {
-            return
-        }
         if (itemMenu === ItemMenu.ARROW) {
-            selectedIds.clear()
+            itemsSelected.clear()
             setShowSideCheckBox(View.GONE)
             adapter.notifyDataSetChanged()
         }
@@ -106,8 +104,8 @@ class ShoppingViewModel @Inject constructor(
     fun onChecked(position: Int) {
         setShowSideCheckBox(View.VISIBLE)
         setSelectedIds(position)
-        longClickSelectedCount.value = selectedIds.size
-        if (selectedIds.size == 0) {
+        longClickSelectedCount.value = itemsSelected.size
+        if (itemsSelected.size == 0) {
             setShowSideCheckBox(View.GONE)
         }
     }
@@ -124,11 +122,11 @@ class ShoppingViewModel @Inject constructor(
             return
         }
 
-        val shoppingId = shoppingModel.shopping.id
-        if (selectedIds.contains(shoppingId)) {
-            selectedIds.remove(shoppingId)
+        val shoppingIdWithTitle = ShoppingIdWithTitle(shoppingModel.shopping.id, shoppingModel.shopping.name)
+        if (itemsSelected.contains(shoppingIdWithTitle)) {
+            itemsSelected.remove(shoppingIdWithTitle)
         } else {
-            selectedIds.add(shoppingId)
+            itemsSelected.add(shoppingIdWithTitle)
         }
     }
 }
