@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.toolbar.view.*
 import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.databinding.CreatorFragmentBinding
+import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.CreatorModule
 import ru.skriplenok.shoppinglist.services.CreatorToolbar
 import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
@@ -25,23 +26,21 @@ class CreatorFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: CreatorViewModel
-        private set
-
     @Inject
     lateinit var creatorToolbar: CreatorToolbar
-        private set
-
     lateinit var toolbarView: Toolbar
         private set
-
+    var shoppingTitle: String? = null
     val toolbarMenuSelected: MutableLiveData<CreatorToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;
+    private var shoppingId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setArguments()
         val binding = getBinding()
         toolbarView = binding.includeToolbar.toolbar
         App.appComponent.creatorComponent(CreatorModule(this)).inject(this)
@@ -52,6 +51,11 @@ class CreatorFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+    }
+
+    private fun setArguments() {
+        shoppingId = arguments?.getInt(Constants.SHOPPING_ID.value)
+        shoppingTitle = arguments?.getString(Constants.SHOPPING_TITLE.value)
     }
 
     private fun getBinding(): CreatorFragmentBinding {

@@ -25,15 +25,10 @@ class ProductsFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ProductsViewModel
-        private set
-
     @Inject
     lateinit var productToolbar: ProductToolbar
-        private set
-
     lateinit var toolbarView: Toolbar
         private set
-
     var shoppingTitle: String? = null
     val toolbarMenuSelected: MutableLiveData<ProductToolbar.ItemMenu> = MutableLiveData()
     private lateinit var navController: NavController;

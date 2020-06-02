@@ -26,15 +26,10 @@ class ShoppingFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ShoppingViewModel
-        private set
-
     @Inject
     lateinit var shoppingToolbar: ShoppingToolbar
-        private set
-
     lateinit var toolbarView: Toolbar
         private set
-
     val toolbarMenuSelected: MutableLiveData<ShoppingToolbar.ItemMenu> = MutableLiveData()
     val longClickSelectedCount: MutableLiveData<Int> = MutableLiveData()
     private lateinit var navController: NavController
