@@ -1,14 +1,16 @@
 package ru.skriplenok.shoppinglist.injection.modules
 
-import androidx.lifecycle.MutableLiveData
 import dagger.Module
 import dagger.Provides
 import ru.skriplenok.shoppinglist.injection.scopes.CreatorScope
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
-import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar
 import ru.skriplenok.shoppinglist.ui.CreatorFragment
+import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar
+import ru.skriplenok.shoppinglist.viewmodel.creator.ChangeState
+import ru.skriplenok.shoppinglist.viewmodel.creator.CreatorState
 import ru.skriplenok.shoppinglist.viewmodel.creator.CreatorViewModel
+import ru.skriplenok.shoppinglist.viewmodel.creator.NewCreatorState
 
 @Module
 class CreatorModule(
@@ -17,15 +19,22 @@ class CreatorModule(
 
     @CreatorScope
     @Provides
-    fun provideCreatorViewModel(
+    fun provideCreatorState(
         shoppingRepo: ShoppingRepository,
         productRepo: ProductRepository
-    ): CreatorViewModel {
+    ): CreatorState = if (creatorFragment.shoppingIdWithTitle === null) {
+            NewCreatorState(shoppingRepo, productRepo)
+        } else {
+            ChangeState(shoppingRepo, productRepo)
+    }
+
+    @CreatorScope
+    @Provides
+    fun provideCreatorViewModel(state: CreatorState): CreatorViewModel {
         return CreatorViewModel(
-            shoppingRepo,
-            productRepo,
             creatorFragment.shoppingIdWithTitle,
-            creatorFragment.toolbarMenuSelected
+            creatorFragment.toolbarMenuSelected,
+            state
         )
     }
 

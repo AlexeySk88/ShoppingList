@@ -15,18 +15,15 @@ import ru.skriplenok.shoppinglist.helpers.QuantityTypes
 import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
-import ru.skriplenok.shoppinglist.repositories.ProductRepository
-import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar.ItemMenu
 import ru.skriplenok.shoppinglist.viewmodel.ProductCellViewModel
 import javax.inject.Inject
 
 class CreatorViewModel @Inject constructor(
-    shoppingRepository: ShoppingRepository,
-    productRepository: ProductRepository,
     shoppingIdWithTitle: ShoppingIdWithTitle?,
-    toolbarMenuSelected: MutableLiveData<ItemMenu>
+    toolbarMenuSelected: MutableLiveData<ItemMenu>,
+    private val state: CreatorState
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
@@ -51,11 +48,6 @@ class CreatorViewModel @Inject constructor(
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
     private val productList: MutableList<ProductModel> = mutableListOf()
-    private val state: CreatorState = if (shoppingIdWithTitle === null) {
-        NewCreatorState(shoppingRepository, productRepository)
-    } else {
-        ChangeState(shoppingRepository, productRepository)
-    }
 
     init {
         state.setTitleAndProductList(shoppingIdWithTitle, title, productList)
