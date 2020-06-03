@@ -18,4 +18,8 @@ class ShoppingRepository @Inject constructor(private val dao: ShoppingDao){
     }
 
     suspend fun insert(dto: ShoppingDto) = dao.insert(dto).toInt()
+
+    suspend fun deleteAll(modelList: List<ShoppingModel>) {
+        dao.deleteAll(Converters.shoppingModelToShoppingDto(modelList))
+    }
 }

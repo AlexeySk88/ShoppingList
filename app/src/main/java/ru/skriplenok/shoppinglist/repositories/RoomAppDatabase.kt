@@ -21,8 +21,7 @@ import java.util.concurrent.Executors
     ProductDto::class,
     ProductTypeDto::class
 ],
-    version = 1,
-    exportSchema = true)
+    version = 1)
 @TypeConverters(Converters::class)
 abstract class RoomAppDatabase: RoomDatabase() {
 

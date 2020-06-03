@@ -10,27 +10,31 @@ import ru.skriplenok.shoppinglist.repositories.dto.ShoppingWithCount
 interface ShoppingDao {
 
     @Transaction
-    @Query("SELECT ${ RoomContract.TABLE_SHOPPING}.id, " +
-            "${ RoomContract.TABLE_SHOPPING}.name, " +
-            "${ RoomContract.TABLE_SHOPPING}.created_date, closed_date, " +
-            "COUNT(${RoomContract.TABLE_PRODUCTS}.id) AS products_all, " +
-            "COUNT(${RoomContract.TABLE_PRODUCTS}.selected_date) AS products_active " +
-            "FROM ${ RoomContract.TABLE_SHOPPING}, ${RoomContract.TABLE_PRODUCTS} " +
-            "WHERE ${ RoomContract.TABLE_SHOPPING}.id = ${RoomContract.TABLE_PRODUCTS}.shopping_id " +
-            "AND closed_date IS NULL " +
-            "GROUP BY ${ RoomContract.TABLE_SHOPPING}.id")
+    @Query("""
+            SELECT ${ RoomContract.TABLE_SHOPPING}.id,
+            ${ RoomContract.TABLE_SHOPPING}.name,
+            ${ RoomContract.TABLE_SHOPPING}.created_date, closed_date,
+            COUNT(${RoomContract.TABLE_PRODUCTS}.id) AS products_all,
+            COUNT(${RoomContract.TABLE_PRODUCTS}.selected_date) AS products_active
+            FROM ${ RoomContract.TABLE_SHOPPING}, ${RoomContract.TABLE_PRODUCTS}
+            WHERE ${ RoomContract.TABLE_SHOPPING}.id = ${RoomContract.TABLE_PRODUCTS}.shopping_id
+            AND closed_date IS NULL
+            GROUP BY ${ RoomContract.TABLE_SHOPPING}.id
+            """)
     suspend fun getAllActive(): List<ShoppingWithCount>
 
     @Transaction
-    @Query("SELECT ${ RoomContract.TABLE_SHOPPING}.id, " +
-            "${ RoomContract.TABLE_SHOPPING}.name, " +
-            "${ RoomContract.TABLE_SHOPPING}.created_date, closed_date, " +
-            "COUNT(${RoomContract.TABLE_PRODUCTS}.id) AS products_all, " +
-            "COUNT(${RoomContract.TABLE_PRODUCTS}.selected_date) AS products_active " +
-            "FROM ${ RoomContract.TABLE_SHOPPING}, ${RoomContract.TABLE_PRODUCTS} " +
-            "WHERE ${ RoomContract.TABLE_SHOPPING}.id = ${RoomContract.TABLE_PRODUCTS}.shopping_id " +
-            "AND closed_date IS NOT NULL " +
-            "GROUP BY ${ RoomContract.TABLE_SHOPPING}.id")
+    @Query("""
+            SELECT ${ RoomContract.TABLE_SHOPPING}.id,
+            ${ RoomContract.TABLE_SHOPPING}.name,
+            ${ RoomContract.TABLE_SHOPPING}.created_date, closed_date,
+            COUNT(${RoomContract.TABLE_PRODUCTS}.id) AS products_all,
+            COUNT(${RoomContract.TABLE_PRODUCTS}.selected_date) AS products_active
+            FROM ${ RoomContract.TABLE_SHOPPING}, ${RoomContract.TABLE_PRODUCTS}
+            WHERE ${ RoomContract.TABLE_SHOPPING}.id = ${RoomContract.TABLE_PRODUCTS}.shopping_id
+            AND closed_date IS NOT NULL 
+            GROUP BY ${ RoomContract.TABLE_SHOPPING}.id
+            """)
     suspend fun getAllArchive(): List<ShoppingWithCount>
 
     @Insert
@@ -41,4 +45,7 @@ interface ShoppingDao {
 
     @Update
     suspend fun updateAll(dtoList: List<ShoppingDto>)
+
+    @Delete
+    suspend fun deleteAll(dtoList: List<ShoppingDto>)
 }

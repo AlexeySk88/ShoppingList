@@ -1,8 +1,6 @@
 package ru.skriplenok.shoppinglist.viewmodel
 
 import android.view.View
-import androidx.databinding.ObservableInt
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch

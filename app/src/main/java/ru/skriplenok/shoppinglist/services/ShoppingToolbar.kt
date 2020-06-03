@@ -7,11 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import ru.skriplenok.shoppinglist.R
 import javax.inject.Inject
 
-
 class ShoppingToolbar @Inject constructor(
     private val toolbar: Toolbar,
     private val toolbarMenuSelected: MutableLiveData<ItemMenu>,
-    count: LiveData<Int>
+    longClickSelectedCount: LiveData<Int>
 ) {
 
     private var isActionMode: Boolean = false
@@ -27,7 +26,7 @@ class ShoppingToolbar @Inject constructor(
             }
         }
         setDefaultMode()
-        count.observeForever {
+        longClickSelectedCount.observeForever {
             updateSelected(it)
         }
     }

@@ -22,7 +22,7 @@ import javax.inject.Inject
 class ShoppingViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository,
     private val longClickSelectedCount: MutableLiveData<Int>,
-    private val toolbarMenuSelected: MutableLiveData<ItemMenu>
+    toolbarMenuSelected: MutableLiveData<ItemMenu>
 ): ViewModel() {
 
     val adapter: ShoppingAdapter = ShoppingAdapter(R.layout.shopping_cell, this)
@@ -32,7 +32,7 @@ class ShoppingViewModel @Inject constructor(
     val navigation: MutableLiveData<Pair<Int, Bundle?>> = MutableLiveData()
     private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
     // id выбранных списков
-    private val itemsSelected: MutableSet<ShoppingIdWithTitle> = mutableSetOf()
+    private val itemsSelected: MutableSet<ShoppingModel> = mutableSetOf()
 
     init {
         navigation.value = null
@@ -51,19 +51,33 @@ class ShoppingViewModel @Inject constructor(
 
     private fun setMenuItemClickListener(itemMenu: ItemMenu?) {
         when (itemMenu) {
-            ItemMenu.ARROW -> {
-                itemsSelected.clear()
-                setShowSideCheckBox(View.GONE)
-                adapter.notifyDataSetChanged()
-            }
+            ItemMenu.ARROW -> arrowClickHandler()
             ItemMenu.ADD  -> navigation.value = Pair(R.id.creatorFragment, null)
-            ItemMenu.EDIT -> {
-                val bundle = bundleOf(
-                    Constants.SHOPPING_ID_WITH_TITLE.value to itemsSelected.first()
-                )
-                navigation.value = Pair(R.id.creatorFragment, bundle)
-            }
+            ItemMenu.EDIT -> editClickHandler()
+            ItemMenu.DELETE -> deleteClickHandler()
         }
+    }
+
+    private fun arrowClickHandler() {
+        itemsSelected.clear()
+        setShowSideCheckBox(View.GONE)
+        adapter.notifyDataSetChanged()
+        longClickSelectedCount.value = 0
+    }
+
+    private fun editClickHandler() {
+        val bundle = bundleOf(
+            Constants.SHOPPING_ID_WITH_TITLE.value to itemsSelected.first()
+        )
+        navigation.value = Pair(R.id.creatorFragment, bundle)
+    }
+
+    private fun deleteClickHandler() {
+        viewModelScope.launch {
+            shoppingRepository.deleteAll(itemsSelected.toList())
+        }
+        shoppingList.removeAll(itemsSelected)
+        arrowClickHandler()
     }
 
     private fun validateShoppingList() {
@@ -135,15 +149,12 @@ class ShoppingViewModel @Inject constructor(
 
     private fun setSelectedIds(position: Int) {
         val shoppingModel = getItem(position)
-        if(shoppingModel === null) {
-            return
-        }
-
-        val shoppingIdWithTitle = ShoppingIdWithTitle(shoppingModel.shopping.id, shoppingModel.shopping.name)
-        if (itemsSelected.contains(shoppingIdWithTitle)) {
-            itemsSelected.remove(shoppingIdWithTitle)
-        } else {
-            itemsSelected.add(shoppingIdWithTitle)
+        shoppingModel?.let {
+            if (itemsSelected.contains(it)) {
+                itemsSelected.remove(it)
+            } else {
+                itemsSelected.add(it)
+            }
         }
     }
 }
