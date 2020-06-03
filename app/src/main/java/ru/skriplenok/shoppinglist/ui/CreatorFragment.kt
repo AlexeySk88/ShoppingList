@@ -20,7 +20,7 @@ import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.CreatorModule
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar
-import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
+import ru.skriplenok.shoppinglist.viewmodel.creator.CreatorViewModel
 import javax.inject.Inject
 
 class CreatorFragment: Fragment() {

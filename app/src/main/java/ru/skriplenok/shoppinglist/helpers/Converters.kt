@@ -36,11 +36,26 @@ object Converters {
         return dtoList
     }
 
+    fun productModelListToMap(list: List<ProductModel>): Map<Int, ProductModel> {
+        val result: MutableMap<Int, ProductModel> = mutableMapOf()
+        for (productModel in list) {
+            result[productModel.product.id] = productModel
+        }
+        return result
+    }
+
+    fun productModelMapToList(map: Map<Int, ProductModel>): List<ProductModel> {
+        val result: MutableList<ProductModel> = mutableListOf()
+        for (entry in map) {
+            result.add(entry.value)
+        }
+        return result
+    }
+
     // SHOPPING
 
     private fun shoppingDtoToShoppingModel(dto: ShoppingWithCount): ShoppingModel {
-        return ShoppingModel(dto.shopping, dto.productsAll,
-                             dto.productsActive)
+        return ShoppingModel(dto.shopping, dto.productsAll, dto.productsActive)
     }
 
     fun shoppingDtoToShoppingModel(dtoList: List<ShoppingWithCount>): MutableList<ShoppingModel> {

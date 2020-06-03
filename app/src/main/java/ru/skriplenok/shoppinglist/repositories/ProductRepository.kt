@@ -23,4 +23,12 @@ class ProductRepository @Inject constructor(private val dao: ProductDao){
     suspend fun update(model: ProductModel) {
         dao.update(Converters.productModelToProductDto(model))
     }
+
+    suspend fun updateAll(list: List<ProductModel>) {
+        dao.updateAll(Converters.productModelToProductDto(list))
+    }
+
+    suspend fun deleteAll(list: List<ProductModel>) {
+        dao.deleteAll(Converters.productModelToProductDto(list))
+    }
 }

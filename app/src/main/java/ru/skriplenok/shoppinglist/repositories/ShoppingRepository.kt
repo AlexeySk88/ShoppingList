@@ -13,6 +13,10 @@ class ShoppingRepository @Inject constructor(private val dao: ShoppingDao){
         return Converters.shoppingDtoToShoppingModel(dao.getAllActive())
     }
 
+    suspend fun updateTitleById(shoppingId: Int, newName: String) {
+        dao.updateTitleById(shoppingId, newName)
+    }
+
     suspend fun updateAll(modelList: List<ShoppingModel>) {
         dao.updateAll(Converters.shoppingModelToShoppingDto(modelList))
     }

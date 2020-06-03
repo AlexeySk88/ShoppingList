@@ -1,5 +1,6 @@
 package ru.skriplenok.shoppinglist.injection.modules
 
+import androidx.lifecycle.MutableLiveData
 import dagger.Module
 import dagger.Provides
 import ru.skriplenok.shoppinglist.injection.scopes.CreatorScope
@@ -7,13 +8,12 @@ import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar
 import ru.skriplenok.shoppinglist.ui.CreatorFragment
-import ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel
+import ru.skriplenok.shoppinglist.viewmodel.creator.CreatorViewModel
 
 @Module
 class CreatorModule(
     private val creatorFragment: CreatorFragment
 ) {
-
 
     @CreatorScope
     @Provides

@@ -1,4 +1,4 @@
-package ru.skriplenok.shoppinglist.viewmodel
+package ru.skriplenok.shoppinglist.viewmodel.creator
 
 import android.content.Context
 import android.view.View
@@ -7,7 +7,6 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.R
 import ru.skriplenok.shoppinglist.adapters.ProductsAdapter
 import ru.skriplenok.shoppinglist.helpers.Constants
@@ -19,14 +18,14 @@ import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
-import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
 import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar.ItemMenu
+import ru.skriplenok.shoppinglist.viewmodel.ProductCellViewModel
 import javax.inject.Inject
 
 class CreatorViewModel @Inject constructor(
-    private val shoppingRepository: ShoppingRepository,
-    private val productRepository: ProductRepository,
-    private val shoppingIdWithTitle: ShoppingIdWithTitle?,
+    shoppingRepository: ShoppingRepository,
+    productRepository: ProductRepository,
+    shoppingIdWithTitle: ShoppingIdWithTitle?,
     toolbarMenuSelected: MutableLiveData<ItemMenu>
 ): ViewModel(), ProductCellViewModel {
 
@@ -52,21 +51,17 @@ class CreatorViewModel @Inject constructor(
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
     private val productList: MutableList<ProductModel> = mutableListOf()
+    private val state: CreatorState = if (shoppingIdWithTitle === null) {
+        NewCreatorState(shoppingRepository, productRepository)
+    } else {
+        ChangeState(shoppingRepository, productRepository)
+    }
 
     init {
-        setTitleAndProductList()
+        state.setTitleAndProductList(shoppingIdWithTitle, title, productList)
         setProductsNumber()
         toolbarMenuSelected.observeForever {
             onClickShoppingSave(it)
-        }
-    }
-
-    private fun setTitleAndProductList() {
-        if (shoppingIdWithTitle != null) {
-            title.set(shoppingIdWithTitle.title)
-            runBlocking {
-                productList.addAll(productRepository.getByShoppingId(shoppingIdWithTitle.id))
-            }
         }
     }
 
@@ -86,12 +81,7 @@ class CreatorViewModel @Inject constructor(
             return
         }
 
-        runBlocking {
-            val shoppingDto = ShoppingDto(name = title.get()!!)
-            val shoppingId = shoppingRepository.insert(shoppingDto)
-            setShoppingId(shoppingId)
-            productRepository.insertAll(productList)
-        }
+        state.shoppingSave(title.get()!!, productList)
         onClose.value = true
     }
 
@@ -158,7 +148,7 @@ class CreatorViewModel @Inject constructor(
         }
         val type = quantityTypes.list[indexType.get()]
         // Так как мы не знаем shoppingId, то сейчас всем товарам в списке задаём 0,
-        // поэтому перед записью в БД обязательно прогоняем весь список через метод setShoppingID()
+        // поэтому перед записью в БД обязательно прогоняем весь список через метод state.setShoppingID()
         val productDto = ProductDto(0, 0, type.id, name.get()!!, count.get()!!)
         productList.add(Converters.productDtoToProductModel(productDto))
         adapter.notifyItemInserted(itemCount() - 1)
@@ -183,11 +173,5 @@ class CreatorViewModel @Inject constructor(
             return false
         }
         return true
-    }
-
-    private fun setShoppingId(shoppingId: Int) {
-        for (item in productList) {
-            item.product.shoppingId = shoppingId
-        }
     }
 }

@@ -3,7 +3,7 @@
     <data>
         <variable
             name="model"
-            type="ru.skriplenok.shoppinglist.viewmodel.CreatorViewModel" />
+            type="ru.skriplenok.shoppinglist.viewmodel.creator.CreatorViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
