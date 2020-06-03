@@ -18,7 +18,7 @@ import ru.skriplenok.shoppinglist.databinding.ProductsFragmentBinding
 import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.injection.modules.ProductModule
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
-import ru.skriplenok.shoppinglist.services.ProductToolbar
+import ru.skriplenok.shoppinglist.ui.toolbars.ProductToolbar
 import ru.skriplenok.shoppinglist.viewmodel.ProductsViewModel
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package ru.skriplenok.shoppinglist.services
+package ru.skriplenok.shoppinglist.ui.toolbars
 
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.MutableLiveData

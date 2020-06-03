@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import ru.skriplenok.shoppinglist.injection.scopes.ShoppingScope
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
-import ru.skriplenok.shoppinglist.services.ShoppingToolbar
+import ru.skriplenok.shoppinglist.ui.toolbars.ShoppingToolbar
 import ru.skriplenok.shoppinglist.ui.ShoppingFragment
 import ru.skriplenok.shoppinglist.viewmodel.ShoppingViewModel
 

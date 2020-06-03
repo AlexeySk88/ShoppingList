@@ -16,7 +16,7 @@ import ru.skriplenok.shoppinglist.helpers.StringHelper
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.models.ShoppingModel
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
-import ru.skriplenok.shoppinglist.services.ShoppingToolbar.ItemMenu
+import ru.skriplenok.shoppinglist.ui.toolbars.ShoppingToolbar.ItemMenu
 import javax.inject.Inject
 
 class ShoppingViewModel @Inject constructor(
@@ -66,8 +66,12 @@ class ShoppingViewModel @Inject constructor(
     }
 
     private fun editClickHandler() {
+        val shoppingIdWithTitle = ShoppingIdWithTitle(
+            itemsSelected.first().shopping.id,
+            itemsSelected.first().shopping.name
+        )
         val bundle = bundleOf(
-            Constants.SHOPPING_ID_WITH_TITLE.value to itemsSelected.first()
+            Constants.SHOPPING_ID_WITH_TITLE.value to shoppingIdWithTitle
         )
         navigation.value = Pair(R.id.creatorFragment, bundle)
     }

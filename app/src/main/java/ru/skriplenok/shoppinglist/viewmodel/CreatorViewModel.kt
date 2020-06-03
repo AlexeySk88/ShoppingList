@@ -20,7 +20,7 @@ import ru.skriplenok.shoppinglist.repositories.ProductRepository
 import ru.skriplenok.shoppinglist.repositories.ShoppingRepository
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 import ru.skriplenok.shoppinglist.repositories.dto.ShoppingDto
-import ru.skriplenok.shoppinglist.services.CreatorToolbar.ItemMenu
+import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar.ItemMenu
 import javax.inject.Inject
 
 class CreatorViewModel @Inject constructor(
