@@ -20,6 +20,7 @@
     <dimen name="products_title_text">22sp</dimen>
     <dimen name="product_title_left_margin">20dp</dimen>
     <dimen name="products_vertical_padding">10dp</dimen>
+    <dimen name="product_separator_height">2dp</dimen>
 
     <dimen name="creator_horizontal_margin">20dp</dimen>
     <dimen name="creator_spinner_margin_start">20dp</dimen>
