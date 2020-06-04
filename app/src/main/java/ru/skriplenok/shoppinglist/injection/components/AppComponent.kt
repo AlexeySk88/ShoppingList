@@ -1,18 +1,18 @@
 package ru.skriplenok.shoppinglist.injection.components
 
 import dagger.Component
+import ru.skriplenok.shoppinglist.App
 import ru.skriplenok.shoppinglist.injection.modules.CreatorModule
 import ru.skriplenok.shoppinglist.injection.modules.ProductModule
 import ru.skriplenok.shoppinglist.injection.modules.RoomModule
 import ru.skriplenok.shoppinglist.injection.modules.ShoppingModule
-import ru.skriplenok.shoppinglist.repositories.dao.ProductTypeDao
 import javax.inject.Singleton
 
 @Singleton
 @Component(dependencies = [], modules = [RoomModule::class])
 interface AppComponent {
 
-    fun getProductTypeDao(): ProductTypeDao
+    fun inject(app: App)
 
     fun shoppingComponent(shoppingModule: ShoppingModule): ShoppingComponent
 
