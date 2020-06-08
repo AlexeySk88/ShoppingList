@@ -3,8 +3,6 @@ package ru.skriplenok.shoppinglist.viewmodel.creator
 import android.content.Context
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.skriplenok.shoppinglist.R
@@ -13,7 +11,7 @@ import ru.skriplenok.shoppinglist.helpers.Constants
 import ru.skriplenok.shoppinglist.helpers.Converters
 import ru.skriplenok.shoppinglist.helpers.QuantityTypes
 import ru.skriplenok.shoppinglist.helpers.StringHelper
-import ru.skriplenok.shoppinglist.models.ProductModel
+import ru.skriplenok.shoppinglist.models.CreatorModel
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.repositories.dto.ProductDto
 import ru.skriplenok.shoppinglist.ui.toolbars.CreatorToolbar.ItemMenu
@@ -28,44 +26,31 @@ class CreatorViewModel @Inject constructor(
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
     var spinnerAdapter: ArrayAdapter<String>? = null
-
-    val title: ObservableField<String> = ObservableField()
-    val productsNumber: ObservableField<String> = ObservableField()
-        get() {
-            if (productList.size > 0 ) {
-                field.set("Товаров в списке: " + productList.size)
-            } else {
-                field.set("Добавьте в список хотя бы один товар")
-            }
-            return field
-        }
-    val name: ObservableField<String> = ObservableField()
-    val count: ObservableField<String> = ObservableField()
-    val indexType: ObservableInt = ObservableInt()
-
+    val productsNumber: MutableLiveData<String> = MutableLiveData()
     val toastMessage: MutableLiveData<String> = MutableLiveData()
     val onClose: MutableLiveData<Boolean> = MutableLiveData()
+    val creatorModel: MutableLiveData<CreatorModel> =
+        MutableLiveData(CreatorModel("", mutableListOf(), "", "", 0))
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
-    private val productList: MutableList<ProductModel> = mutableListOf()
 
     init {
-        state.setTitleAndProductList(shoppingIdWithTitle, title, productList)
+        state.setTitleAndProductList(shoppingIdWithTitle, creatorModel.value!!)
         setProductsNumber()
         toolbarMenuSelected.observeForever {
-            onClickShoppingSave(it)
+            onClickListSave(it)
         }
     }
 
     private fun setProductsNumber() {
-        if (productList.size > 0 ) {
-            productsNumber.set("Товаров в списке: " + productList.size)
+        if (itemCount() > 0 ) {
+            productsNumber.value = "Товаров в списке: ${itemCount()}"
             return
         }
-        productsNumber.set("Добавьте в список хотя бы один товар")
+        productsNumber.value = "Добавьте в список хотя бы один товар"
     }
 
-    private fun onClickShoppingSave(itemMenu: ItemMenu?) {
+    private fun onClickListSave(itemMenu: ItemMenu?) {
         if (itemMenu != ItemMenu.SAVE) {
             return
         }
@@ -73,19 +58,18 @@ class CreatorViewModel @Inject constructor(
             return
         }
 
-        state.shoppingSave(title.get()!!, productList)
+        state.shoppingSave(creatorModel.value!!)
         onClose.value = true
     }
 
     private fun validateShopping(): Boolean {
         val sb = StringBuilder()
-        if (title.get().isNullOrEmpty()) {
+        if (creatorModel.value?.title?.isEmpty()!!) {
             sb.append(formatItemValidateMessage(Constants.NAME_SHOPPING.value))
         }
-        if (productList.size == 0) {
+        if (itemCount() == 0) {
             sb.append(formatItemValidateMessage(Constants.PRODUCT_COUNT.value))
         }
-
         if (sb.isNotEmpty()) {
             sb.insert(0, Constants.CREATOR_NOT_VALIDATED.value + ":")
             toastMessage.value = sb.toString()
@@ -106,15 +90,14 @@ class CreatorViewModel @Inject constructor(
     }
 
     override fun getTitle(position: Int): String? {
-        if (position < productList.size) {
-            return productList[position].product.name
-        }
-        return null
+        return creatorModel.value?.productList?.get(position)?.product?.name
     }
 
     override fun getSelected(position: Int): Boolean {
-        if (position < productList.size) {
-            return productList[position].product.selectedDate != null
+        creatorModel.value?.let {
+            if (position < itemCount()) {
+                return it.productList[position].product.selectedDate != null
+            }
         }
         return false
     }
@@ -123,39 +106,49 @@ class CreatorViewModel @Inject constructor(
     override fun onSelected(position: Int) { }
 
     override fun getQuantity(position: Int): String? {
-        if (position < productList.size) {
-            val product = productList[position]
-            return StringHelper.getQuantity(product.product.quantity, product.typeShortName)
+        creatorModel.value?.let {
+            if (position < itemCount()) {
+                val product = it.productList[position]
+                return StringHelper.getQuantity(product.product.quantity, product.typeShortName)
+            }
         }
         return null
     }
 
     override fun getVisible(): Int = View.GONE
 
-    override fun itemCount(): Int = productList.size
-
-    fun onClickSave() {
-        if (!validateProduct()) {
-            return
+    override fun itemCount(): Int {
+        creatorModel.value?.let {
+            return it.productList.size
         }
-        val type = quantityTypes.list[indexType.get()]
-        // Так как мы не знаем shoppingId, то сейчас всем товарам в списке задаём 0,
-        // поэтому перед записью в БД обязательно прогоняем весь список через метод state.setShoppingID()
-        val productDto = ProductDto(0, 0, type.id, name.get()!!, count.get()!!)
-        productList.add(Converters.productDtoToProductModel(productDto))
-        adapter.notifyItemInserted(itemCount() - 1)
-        setProductsNumber()
-
-        name.set(null)
-        count.set(null)
+        return 0
     }
 
-    private fun validateProduct(): Boolean {
+    fun onClickProductSave() {
+        creatorModel.value?.let {
+            if (!validateProduct(it)) {
+                return
+            }
+            val type = quantityTypes.list[it.indexType]
+            // Так как мы не знаем shoppingId, то сейчас всем товарам в списке задаём 0,
+            // поэтому перед записью в БД обязательно прогоняем весь список через метод state.setShoppingID()
+            // TODO убрать эту конвертацию
+            val productDto = ProductDto(0, 0, type.id, it.productName, it.productQuantity)
+            it.productList.add(Converters.productDtoToProductModel(productDto))
+            adapter.notifyItemInserted(itemCount() - 1)
+            setProductsNumber()
+
+            it.productName = ""
+            it.productQuantity = ""
+        }
+    }
+
+    private fun validateProduct(model: CreatorModel): Boolean {
         val sb = StringBuilder()
-        if (name.get().isNullOrEmpty()) {
+        if (model.productName.isEmpty()) {
             sb.append(formatItemValidateMessage(Constants.NAME_PRODUCT.value))
         }
-        if (count.get().isNullOrEmpty()) {
+        if (model.productQuantity.isEmpty()) {
             sb.append(formatItemValidateMessage(Constants.COUNT_PRODUCT.value))
         }
 

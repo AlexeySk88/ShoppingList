@@ -32,7 +32,7 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
 
             <EditText
-                android:text="@={model.title}"
+                android:text="@={model.creatorModel.title}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -86,7 +86,7 @@
 
                 <EditText
                     android:id="@+id/productName"
-                    android:text="@={model.name}"
+                    android:text="@={model.creatorModel.productName}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Продукт1"/>
@@ -101,7 +101,7 @@
 
                 <EditText
                     android:id="@+id/quantity"
-                    android:text="@={model.count}"
+                    android:text="@={model.creatorModel.productQuantity}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
@@ -110,7 +110,7 @@
 
             <Spinner
                 android:id="@+id/spinner"
-                android:selectedItemPosition="@={model.indexType}"
+                android:selectedItemPosition="@={model.creatorModel.indexType}"
                 app:setAdapter="@{model.spinnerAdapter}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
             <Button
                 android:id="@+id/productSave"
                 android:text="Сохранить"
-                android:onClick="@{() -> model.onClickSave()}"
+                android:onClick="@{() -> model.onClickProductSave()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/spinner"

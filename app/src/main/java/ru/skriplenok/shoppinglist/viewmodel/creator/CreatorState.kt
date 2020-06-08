@@ -1,6 +1,6 @@
 package ru.skriplenok.shoppinglist.viewmodel.creator
 
-import androidx.databinding.ObservableField
+import ru.skriplenok.shoppinglist.models.CreatorModel
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
@@ -11,12 +11,11 @@ abstract class CreatorState(
     protected val productRepository: ProductRepository
 ) {
 
-    abstract fun shoppingSave(shoppingTitle: String, productList: List<ProductModel>)
+    abstract fun shoppingSave(creatorModel: CreatorModel)
 
     abstract fun setTitleAndProductList(
         shoppingIdWithTitle: ShoppingIdWithTitle?,
-        title: ObservableField<String>,
-        productList: MutableList<ProductModel>
+        creatorModel: CreatorModel
     )
 
     protected fun setShoppingId(shoppingId: Int, productList: List<ProductModel>) {

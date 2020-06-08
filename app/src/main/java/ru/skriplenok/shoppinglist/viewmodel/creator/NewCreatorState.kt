@@ -1,7 +1,7 @@
 package ru.skriplenok.shoppinglist.viewmodel.creator
 
-import androidx.databinding.ObservableField
 import kotlinx.coroutines.runBlocking
+import ru.skriplenok.shoppinglist.models.CreatorModel
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
@@ -13,19 +13,18 @@ class NewCreatorState(
     productRepository: ProductRepository
 ): CreatorState(shoppingRepository, productRepository) {
 
-    override fun shoppingSave(shoppingTitle: String, productList: List<ProductModel>) {
+    override fun shoppingSave(creatorModel: CreatorModel) {
         runBlocking {
-            val shoppingDto = ShoppingDto(name = shoppingTitle)
+            val shoppingDto = ShoppingDto(name = creatorModel.title)
             val shoppingId = shoppingRepository.insert(shoppingDto)
-            setShoppingId(shoppingId, productList)
-            productRepository.insertAll(productList)
+            setShoppingId(shoppingId, creatorModel.productList)
+            productRepository.insertAll(creatorModel.productList)
         }
     }
 
     override fun setTitleAndProductList(
         shoppingIdWithTitle: ShoppingIdWithTitle?,
-        title: ObservableField<String>,
-        productList: MutableList<ProductModel>
+        creatorModel: CreatorModel
     ) {
         //Ничего не делаем, т.к. новый список
     }

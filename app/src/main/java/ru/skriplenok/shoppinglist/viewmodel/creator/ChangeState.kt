@@ -1,8 +1,8 @@
 package ru.skriplenok.shoppinglist.viewmodel.creator
 
-import androidx.databinding.ObservableField
 import kotlinx.coroutines.runBlocking
 import ru.skriplenok.shoppinglist.helpers.Converters
+import ru.skriplenok.shoppinglist.models.CreatorModel
 import ru.skriplenok.shoppinglist.models.ProductModel
 import ru.skriplenok.shoppinglist.models.ShoppingIdWithTitle
 import ru.skriplenok.shoppinglist.repositories.ProductRepository
@@ -22,9 +22,9 @@ class ChangeState(
 
     // Чтобы shoppingSave выполнился успешно, перед ним обязательно
     // должен быть вызван метод setTitleAndProductList
-    override fun shoppingSave(shoppingTitle: String, productList: List<ProductModel>) {
-        titleCompareAndSave(shoppingTitle)
-        productListCompareAndSave(productList)
+    override fun shoppingSave(creatorModel: CreatorModel) {
+        titleCompareAndSave(creatorModel.title)
+        productListCompareAndSave(creatorModel.productList)
     }
 
     private fun titleCompareAndSave(newTitle: String) = shoppingIdWithTitle?.let {
@@ -74,16 +74,15 @@ class ChangeState(
 
     override fun setTitleAndProductList(
         shoppingIdWithTitle: ShoppingIdWithTitle?,
-        title: ObservableField<String>,
-        productList: MutableList<ProductModel>
+        creatorModel: CreatorModel
     ) {
         shoppingIdWithTitle?.let {
-            title.set(shoppingIdWithTitle.title)
+            creatorModel.title = shoppingIdWithTitle.title.toString()
             runBlocking {
-                productList.addAll(productRepository.getByShoppingId(shoppingIdWithTitle.id))
+                creatorModel.productList.addAll(productRepository.getByShoppingId(shoppingIdWithTitle.id))
             }
         }
         this.shoppingIdWithTitle = shoppingIdWithTitle
-        initialProductMap = Converters.productModelListToMap(productList).toMutableMap()
+        initialProductMap = Converters.productModelListToMap(creatorModel.productList).toMutableMap()
     }
 }

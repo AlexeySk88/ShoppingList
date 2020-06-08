@@ -65,6 +65,7 @@ class CreatorFragment: Fragment() {
     private fun setBinding(savedInstanceState: Bundle?, binding: CreatorFragmentBinding) {
         viewModel.setSpinnerAdapter(requireContext())
         binding.model = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         setupObservers()
     }
 
