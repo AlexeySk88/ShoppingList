@@ -13,9 +13,18 @@ object Converters {
     // PRODUCT
 
     //TODO добавить обработчик ошибок
-    fun productDtoToProductModel(dto: ProductDto): ProductModel {
+    private fun productDtoToProductModel(dto: ProductDto): ProductModel {
         val quantityType = quantityTypes.map[dto.typeId] ?: error("")
-        return ProductModel(dto, quantityType.shortName)
+        return ProductModel(
+            dto.id,
+            dto.shoppingId,
+            dto.typeId,
+            dto.name,
+            dto.quantity,
+            dto.createdDate,
+            dto.selectedDate,
+            quantityType.shortName
+        )
     }
 
     fun productDtoToProductModel(dtoList: List<ProductDto>): MutableList<ProductModel> {
@@ -26,7 +35,17 @@ object Converters {
         return models
     }
 
-    fun productModelToProductDto(model: ProductModel) = model.product
+    fun productModelToProductDto(model: ProductModel): ProductDto {
+        return ProductDto(
+            model.id,
+            model.shoppingId,
+            model.typeId,
+            model.name,
+            model.quantity,
+            model.createdDate,
+            model.selectedDate
+        )
+    }
 
     fun productModelToProductDto(modelList: List<ProductModel>): List<ProductDto> {
         val dtoList = mutableListOf<ProductDto>()
@@ -39,7 +58,7 @@ object Converters {
     fun productModelListToMap(list: List<ProductModel>): Map<Int, ProductModel> {
         val result: MutableMap<Int, ProductModel> = mutableMapOf()
         for (productModel in list) {
-            result[productModel.product.id] = productModel
+            result[productModel.id] = productModel
         }
         return result
     }
@@ -66,7 +85,7 @@ object Converters {
         return modelList
     }
 
-    private fun shoppingModelToShoppingDto(model: ShoppingModel) = model.shopping
+    private fun shoppingModelToShoppingDto(model: ShoppingModel): ShoppingDto = model.shopping
 
     fun shoppingModelToShoppingDto(modelList: List<ShoppingModel>): List<ShoppingDto> {
         val dtoList = mutableListOf<ShoppingDto>()

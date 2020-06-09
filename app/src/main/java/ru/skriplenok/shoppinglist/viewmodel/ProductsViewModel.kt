@@ -29,14 +29,14 @@ class ProductsViewModel @Inject constructor(
 
     override fun getTitle(position: Int): String? {
         if (position < itemCount()) {
-            return productList[position].product.name
+            return productList[position].name
         }
         return null
     }
 
     override fun getSelected(position: Int): Boolean {
         if (position< itemCount()) {
-            return productList[position].product.selectedDate != null
+            return productList[position].selectedDate != null
         }
         return false
     }
@@ -54,17 +54,17 @@ class ProductsViewModel @Inject constructor(
     }
 
     private fun setSelectedDate(model: ProductModel) {
-        if (model.product.selectedDate == null) {
-            model.product.selectedDate = Calendar.getInstance()
+        if (model.selectedDate == null) {
+            model.selectedDate = Calendar.getInstance()
         } else {
-            model.product.selectedDate = null
+            model.selectedDate = null
         }
     }
 
     override fun getQuantity(position: Int): String? {
         if (position < itemCount()) {
             val product = productList[position]
-            return StringHelper.getQuantity(product.product.quantity, product.typeShortName)
+            return StringHelper.getQuantity(product.quantity, product.typeShortName)
         }
         return null
     }

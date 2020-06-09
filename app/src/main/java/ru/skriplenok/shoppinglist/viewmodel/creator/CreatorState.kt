@@ -20,7 +20,7 @@ abstract class CreatorState(
 
     protected fun setShoppingId(shoppingId: Int, productList: List<ProductModel>) {
         for (item in productList) {
-            item.product.shoppingId = shoppingId
+            item.shoppingId = shoppingId
         }
     }
 }

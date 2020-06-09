@@ -46,7 +46,7 @@ class ChangeState(
     }
 
     private fun insertOrUpdateList(productModel: ProductModel) {
-        val key = productModel.product.id
+        val key = productModel.id
         if (initialProductMap!!.containsKey(key)) {
             if (productModel != initialProductMap!![key]) {
                 updateList.add(productModel)
