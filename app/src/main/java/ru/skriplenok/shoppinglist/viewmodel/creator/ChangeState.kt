@@ -23,7 +23,7 @@ class ChangeState(
     // Чтобы shoppingSave выполнился успешно, перед ним обязательно
     // должен быть вызван метод setTitleAndProductList
     override fun shoppingSave(creatorModel: CreatorModel) {
-        titleCompareAndSave(creatorModel.title)
+        titleCompareAndSave(creatorModel.title ?: "")
         productListCompareAndSave(creatorModel.productList)
     }
 

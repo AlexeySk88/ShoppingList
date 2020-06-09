@@ -15,7 +15,7 @@ class NewCreatorState(
 
     override fun shoppingSave(creatorModel: CreatorModel) {
         runBlocking {
-            val shoppingDto = ShoppingDto(name = creatorModel.title)
+            val shoppingDto = ShoppingDto(name = creatorModel.title ?: "")
             val shoppingId = shoppingRepository.insert(shoppingDto)
             setShoppingId(shoppingId, creatorModel.productList)
             productRepository.insertAll(creatorModel.productList)

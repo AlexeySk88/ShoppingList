@@ -30,7 +30,7 @@ class CreatorViewModel @Inject constructor(
     val toastMessage: MutableLiveData<String> = MutableLiveData()
     val onClose: MutableLiveData<Boolean> = MutableLiveData()
     val creatorModel: MutableLiveData<CreatorModel> =
-        MutableLiveData(CreatorModel("", mutableListOf(), "", "", 0))
+        MutableLiveData(CreatorModel(null, mutableListOf(), null, null, 0))
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
 
@@ -50,21 +50,21 @@ class CreatorViewModel @Inject constructor(
         productsNumber.value = "Добавьте в список хотя бы один товар"
     }
 
-    private fun onClickListSave(itemMenu: ItemMenu?) {
+    private fun onClickListSave(itemMenu: ItemMenu?) = creatorModel.value?.let {
         if (itemMenu != ItemMenu.SAVE) {
-            return
+            return@let
         }
-        if (!validateShopping()) {
-            return
+        if (!validateShopping(it)) {
+            return@let
         }
 
-        state.shoppingSave(creatorModel.value!!)
+        state.shoppingSave(it)
         onClose.value = true
     }
 
-    private fun validateShopping(): Boolean {
+    private fun validateShopping(creatorModel: CreatorModel): Boolean {
         val sb = StringBuilder()
-        if (creatorModel.value?.title?.isEmpty()!!) {
+        if (creatorModel.title.isNullOrEmpty()) {
             sb.append(formatItemValidateMessage(Constants.NAME_SHOPPING.value))
         }
         if (itemCount() == 0) {
@@ -133,21 +133,21 @@ class CreatorViewModel @Inject constructor(
         adapter.notifyItemInserted(itemCount() - 1)
         setProductsNumber()
 
-        it.productName = ""
-        it.productQuantity = ""
+        it.productName = null
+        it.productQuantity = null
     }
 
     private fun getProductModel(creatorModel: CreatorModel): ProductModel {
         val type = quantityTypes.list[creatorModel.indexType]
+        val quantityType = quantityTypes.map[type.id] ?: error("")
         // Так как мы не знаем shoppingId, то сейчас всем товарам в списке задаём 0,
         // поэтому перед записью в БД обязательно прогоняем весь список через метод state.setShoppingID()
-        val quantityType = quantityTypes.map[type.id] ?: error("")
         return ProductModel(
             0,
             0,
             type.id,
-            creatorModel.productName,
-            creatorModel.productQuantity,
+            creatorModel.productName!!,
+            creatorModel.productQuantity!!,
             Calendar.getInstance(),
             null,
             quantityType.shortName
@@ -156,10 +156,10 @@ class CreatorViewModel @Inject constructor(
 
     private fun validateProduct(model: CreatorModel): Boolean {
         val sb = StringBuilder()
-        if (model.productName.isEmpty()) {
+        if (model.productName.isNullOrEmpty()) {
             sb.append(formatItemValidateMessage(Constants.NAME_PRODUCT.value))
         }
-        if (model.productQuantity.isEmpty()) {
+        if (model.productQuantity.isNullOrEmpty()) {
             sb.append(formatItemValidateMessage(Constants.COUNT_PRODUCT.value))
         }
 
