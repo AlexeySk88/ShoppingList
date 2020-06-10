@@ -30,7 +30,7 @@ class CreatorViewModel @Inject constructor(
     val toastMessage: MutableLiveData<String> = MutableLiveData()
     val onClose: MutableLiveData<Boolean> = MutableLiveData()
     val creatorModel: MutableLiveData<CreatorModel> =
-        MutableLiveData(CreatorModel(null, mutableListOf(), null, null, 0))
+        MutableLiveData(CreatorModel(null, mutableListOf(), MutableLiveData(), MutableLiveData(), 0))
 
     private var quantityTypes: QuantityTypes = QuantityTypes.getInstance()
 
@@ -133,8 +133,8 @@ class CreatorViewModel @Inject constructor(
         adapter.notifyItemInserted(itemCount() - 1)
         setProductsNumber()
 
-        it.productName = null
-        it.productQuantity = null
+        it.productName.value = null
+        it.productQuantity.value = null
     }
 
     private fun getProductModel(creatorModel: CreatorModel): ProductModel {
@@ -146,8 +146,8 @@ class CreatorViewModel @Inject constructor(
             0,
             0,
             type.id,
-            creatorModel.productName!!,
-            creatorModel.productQuantity!!,
+            creatorModel.productName.value!!,
+            creatorModel.productQuantity.value!!,
             Calendar.getInstance(),
             null,
             quantityType.shortName
@@ -156,10 +156,10 @@ class CreatorViewModel @Inject constructor(
 
     private fun validateProduct(model: CreatorModel): Boolean {
         val sb = StringBuilder()
-        if (model.productName.isNullOrEmpty()) {
+        if (model.productName.value.isNullOrEmpty()) {
             sb.append(formatItemValidateMessage(Constants.NAME_PRODUCT.value))
         }
-        if (model.productQuantity.isNullOrEmpty()) {
+        if (model.productQuantity.value.isNullOrEmpty()) {
             sb.append(formatItemValidateMessage(Constants.COUNT_PRODUCT.value))
         }
 
