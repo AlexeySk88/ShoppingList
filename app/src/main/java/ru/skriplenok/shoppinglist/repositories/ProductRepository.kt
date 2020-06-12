@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class ProductRepository @Inject constructor(private val dao: ProductDao){
 
-    suspend fun getByShoppingId(id: Int): MutableList<ProductModel> {
+    suspend fun getByShoppingId(id: Int): List<ProductModel> {
         val dto = dao.getByShoppingId(id)
         return Converters.productDtoToProductModel(dto)
     }

@@ -19,11 +19,11 @@ class ProductsViewModel @Inject constructor(
 ): ViewModel(), ProductCellViewModel {
 
     val adapter: ProductsAdapter = ProductsAdapter(R.layout.product_cell, this)
-    private var productList: MutableList<ProductModel> = mutableListOf()
+    private val productList: MutableList<ProductModel> = mutableListOf()
 
     init{
         runBlocking {
-            productList = productRepository.getByShoppingId(shoppingId)
+            productList.addAll(productRepository.getByShoppingId(shoppingId))
         }
     }
 

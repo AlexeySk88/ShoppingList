@@ -9,7 +9,7 @@ import javax.inject.Inject
 class ShoppingRepository @Inject constructor(private val dao: ShoppingDao){
 
     //TODO добавить сохранение резульата выборки и его инвалидации при UID
-    suspend fun getAllActive(): MutableList<ShoppingModel> {
+    suspend fun getAllActive(): List<ShoppingModel> {
         return Converters.shoppingDtoToShoppingModel(dao.getAllActive())
     }
 

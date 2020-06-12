@@ -30,7 +30,7 @@ class ShoppingViewModel @Inject constructor(
     val countItems: Int
         get() = shoppingList.count()
     val navigation: MutableLiveData<Pair<Int, Bundle?>> = MutableLiveData()
-    private var shoppingList: MutableList<ShoppingModel> = mutableListOf()
+    private val shoppingList: MutableList<ShoppingModel> = mutableListOf()
     // id выбранных списков
     private val itemsSelected: MutableSet<ShoppingModel> = mutableSetOf()
 
@@ -42,7 +42,7 @@ class ShoppingViewModel @Inject constructor(
         }
         itemsSelected.clear()
         runBlocking {
-            shoppingList = shoppingRepository.getAllActive()
+            shoppingList.addAll(shoppingRepository.getAllActive())
         }
         if (!shoppingList.isNullOrEmpty()) {
             validateShoppingList()
@@ -95,7 +95,8 @@ class ShoppingViewModel @Inject constructor(
             }
             newShoppingList.add(shopping)
         }
-        shoppingList = newShoppingList
+        shoppingList.clear()
+        shoppingList.addAll(newShoppingList)
 
         viewModelScope.launch {
             shoppingRepository.updateAll(archiveList)
